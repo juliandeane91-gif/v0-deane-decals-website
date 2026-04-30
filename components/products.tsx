@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Trophy, Laptop, Coffee, Sparkles } from "lucide-react"
+import { ArrowRight, Trophy, Laptop, Coffee, Sparkles, Heart, Apple, Car, CupSoda, Star } from "lucide-react"
 
 const categories = [
   {
@@ -26,14 +26,64 @@ const categories = [
     iconColor: "text-accent-foreground",
   },
   {
-    name: "Tumbler Stickers",
+    name: "Cup Designs",
     description: "Waterproof & super cool",
     count: "20+ Designs",
-    icon: Coffee,
+    icon: CupSoda,
     gradient: "from-destructive/20 to-destructive/5",
     border: "border-destructive/30 hover:border-destructive/60",
     iconBg: "bg-destructive",
     iconColor: "text-destructive-foreground",
+  },
+  {
+    name: "Wedding Stickers",
+    description: "Celebrate your special day",
+    count: "15+ Designs",
+    icon: Heart,
+    gradient: "from-chart-4/20 to-chart-4/5",
+    border: "border-chart-4/30 hover:border-chart-4/60",
+    iconBg: "bg-chart-4",
+    iconColor: "text-white",
+  },
+  {
+    name: "Teacher Appreciation",
+    description: "Show teachers some love",
+    count: "20+ Designs",
+    icon: Apple,
+    gradient: "from-chart-5/20 to-chart-5/5",
+    border: "border-chart-5/30 hover:border-chart-5/60",
+    iconBg: "bg-chart-5",
+    iconColor: "text-white",
+  },
+  {
+    name: "Car Decals",
+    description: "Ride in style",
+    count: "25+ Designs",
+    icon: Car,
+    gradient: "from-primary/20 to-accent/5",
+    border: "border-primary/30 hover:border-primary/60",
+    iconBg: "bg-primary",
+    iconColor: "text-primary-foreground",
+  },
+  {
+    name: "Tumbler Stickers",
+    description: "Personalize your drinkware",
+    count: "30+ Designs",
+    icon: Coffee,
+    gradient: "from-accent/20 to-destructive/5",
+    border: "border-accent/30 hover:border-accent/60",
+    iconBg: "bg-accent",
+    iconColor: "text-accent-foreground",
+  },
+  {
+    name: "Temporary Tattoos",
+    description: "Fun designs for any event",
+    count: "15+ Designs",
+    icon: Star,
+    gradient: "from-chart-4/20 to-primary/5",
+    border: "border-chart-4/30 hover:border-chart-4/60",
+    iconBg: "bg-chart-4",
+    iconColor: "text-white",
   },
 ]
 
@@ -112,7 +162,7 @@ export function Products() {
         </div>
 
         {/* Categories */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-20">
           {categories.map((category) => (
             <Card 
               key={category.name} 
