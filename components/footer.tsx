@@ -26,7 +26,7 @@ export function Footer() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
               <h3 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-bold flex items-center gap-2">
-                <Mail className="w-6 h-6 text-chart-4" />
+                <Mail className="w-6 h-6 text-accent" />
                 Join the Sticker Squad!
               </h3>
               <p className="mt-2 text-background/70">
@@ -39,7 +39,7 @@ export function Footer() {
                 placeholder="Your email address" 
                 className="bg-background/10 border-background/20 text-background placeholder:text-background/50 rounded-full px-6"
               />
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6 font-bold">
+              <Button className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground rounded-full px-6 font-bold shadow-lg shadow-primary/25">
                 Subscribe
               </Button>
             </div>
@@ -50,7 +50,7 @@ export function Footer() {
         <div className="py-16 grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg">
                 <Sparkles className="w-4 h-4 text-primary-foreground" />
               </div>
               <span className="font-[family-name:var(--font-display)] text-xl font-bold">
@@ -61,7 +61,7 @@ export function Footer() {
               Awesome stickers made by two brothers who love sports and making cool stuff!
             </p>
             <div className="flex gap-4 mt-6">
-              <Link href="#" className="text-background/60 hover:text-chart-4 transition-colors">
+              <Link href="#" className="text-background/60 hover:text-accent transition-colors">
                 <Instagram className="h-5 w-5" />
                 <span className="sr-only">Instagram</span>
               </Link>
@@ -69,7 +69,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-[family-name:var(--font-display)] font-bold text-sm uppercase tracking-wider mb-4">
+            <h4 className="font-[family-name:var(--font-display)] font-bold text-sm uppercase tracking-wider mb-4 text-accent">
               Shop
             </h4>
             <ul className="space-y-3">
@@ -87,7 +87,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-[family-name:var(--font-display)] font-bold text-sm uppercase tracking-wider mb-4">
+            <h4 className="font-[family-name:var(--font-display)] font-bold text-sm uppercase tracking-wider mb-4 text-accent">
               Help
             </h4>
             <ul className="space-y-3">
@@ -105,7 +105,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-[family-name:var(--font-display)] font-bold text-sm uppercase tracking-wider mb-4">
+            <h4 className="font-[family-name:var(--font-display)] font-bold text-sm uppercase tracking-wider mb-4 text-accent">
               Fun Fact
             </h4>
             <p className="text-sm text-background/70 leading-relaxed">
