@@ -30,8 +30,8 @@ export function Hero() {
         </h1>
         
         <p className="mt-8 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground text-pretty font-medium">
-          Awesome sports team stickers, laptop decals, and tumbler stickers! 
-          Created by two brothers (ages 7 & 9) who love sports and making cool stuff.
+          Unique designs for helmet stickers, laptop decals, tumbler decals and so much more! 
+          Created by 2 brothers who love sports and have an eye for creativity. Let us help bring your sticker vision to life!
         </p>
 
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
