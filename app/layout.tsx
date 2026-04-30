@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
-import { Playfair_Display, Inter } from 'next/font/google'
+import { Fredoka, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const playfair = Playfair_Display({ 
+const fredoka = Fredoka({ 
   subsets: ["latin"],
-  variable: '--font-serif'
+  variable: '--font-display'
 });
 const inter = Inter({ 
   subsets: ["latin"],
@@ -13,8 +13,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Deane Decals | Custom Vinyl Decals & Stickers',
-  description: 'Premium custom vinyl decals and stickers. Transform any surface with our high-quality, weather-resistant designs.',
+  title: 'Deane Decals | Awesome Stickers by Kids, for Everyone!',
+  description: 'Cool sports team stickers, laptop decals, and tumbler stickers! Made by two brothers who love sports and awesome designs.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -42,7 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-background">
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${fredoka.variable} font-sans antialiased`}>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

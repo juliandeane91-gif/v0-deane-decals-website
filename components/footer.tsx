@@ -1,52 +1,45 @@
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Instagram, Facebook, Twitter } from "lucide-react"
+import { Instagram, Sparkles, Heart, Mail } from "lucide-react"
 
 const footerLinks = {
   shop: [
-    { name: "All Products", href: "#" },
-    { name: "Car Decals", href: "#" },
-    { name: "Laptop Stickers", href: "#" },
-    { name: "Wall Decals", href: "#" },
+    { name: "Sports Stickers", href: "#" },
+    { name: "Laptop Decals", href: "#" },
+    { name: "Tumbler Stickers", href: "#" },
     { name: "Custom Orders", href: "#custom" },
   ],
-  support: [
+  help: [
     { name: "FAQ", href: "#" },
     { name: "Shipping Info", href: "#" },
-    { name: "Returns", href: "#" },
     { name: "Contact Us", href: "#" },
-  ],
-  company: [
-    { name: "About Us", href: "#about" },
-    { name: "Blog", href: "#" },
-    { name: "Careers", href: "#" },
-    { name: "Privacy Policy", href: "#" },
   ],
 }
 
 export function Footer() {
   return (
-    <footer className="bg-primary text-primary-foreground">
+    <footer className="bg-foreground text-background">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Newsletter */}
-        <div className="py-16 border-b border-primary-foreground/10">
+        <div className="py-16 border-b border-background/10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h3 className="font-serif text-2xl md:text-3xl font-medium">
-                Stay in the loop
+              <h3 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-bold flex items-center gap-2">
+                <Mail className="w-6 h-6 text-chart-4" />
+                Join the Sticker Squad!
               </h3>
-              <p className="mt-2 text-primary-foreground/70">
-                Subscribe for exclusive designs, promotions, and inspiration.
+              <p className="mt-2 text-background/70">
+                Get updates on new designs, special deals, and cool stuff!
               </p>
             </div>
             <div className="flex gap-3">
               <Input 
                 type="email" 
-                placeholder="Enter your email" 
-                className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 rounded-full px-6"
+                placeholder="Your email address" 
+                className="bg-background/10 border-background/20 text-background placeholder:text-background/50 rounded-full px-6"
               />
-              <Button className="bg-accent text-accent-foreground hover:bg-accent/90 rounded-full px-6">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6 font-bold">
                 Subscribe
               </Button>
             </div>
@@ -55,31 +48,28 @@ export function Footer() {
 
         {/* Links */}
         <div className="py-16 grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div>
-            <Link href="/" className="font-serif text-xl font-semibold">
-              Deane Decals
+          <div className="col-span-2 md:col-span-1">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <span className="font-[family-name:var(--font-display)] text-xl font-bold">
+                Deane Decals
+              </span>
             </Link>
-            <p className="mt-4 text-sm text-primary-foreground/70 leading-relaxed">
-              Premium custom decals and stickers, crafted with care since 2020.
+            <p className="mt-4 text-sm text-background/70 leading-relaxed">
+              Awesome stickers made by two brothers who love sports and making cool stuff!
             </p>
             <div className="flex gap-4 mt-6">
-              <Link href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
+              <Link href="#" className="text-background/60 hover:text-chart-4 transition-colors">
                 <Instagram className="h-5 w-5" />
                 <span className="sr-only">Instagram</span>
-              </Link>
-              <Link href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
-                <Facebook className="h-5 w-5" />
-                <span className="sr-only">Facebook</span>
-              </Link>
-              <Link href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
-                <Twitter className="h-5 w-5" />
-                <span className="sr-only">Twitter</span>
               </Link>
             </div>
           </div>
 
           <div>
-            <h4 className="font-medium text-sm uppercase tracking-wider mb-4">
+            <h4 className="font-[family-name:var(--font-display)] font-bold text-sm uppercase tracking-wider mb-4">
               Shop
             </h4>
             <ul className="space-y-3">
@@ -87,7 +77,7 @@ export function Footer() {
                 <li key={link.name}>
                   <Link 
                     href={link.href} 
-                    className="text-sm text-primary-foreground/70 hover:text-accent transition-colors"
+                    className="text-sm text-background/70 hover:text-primary transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -97,15 +87,15 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-medium text-sm uppercase tracking-wider mb-4">
-              Support
+            <h4 className="font-[family-name:var(--font-display)] font-bold text-sm uppercase tracking-wider mb-4">
+              Help
             </h4>
             <ul className="space-y-3">
-              {footerLinks.support.map((link) => (
+              {footerLinks.help.map((link) => (
                 <li key={link.name}>
                   <Link 
                     href={link.href} 
-                    className="text-sm text-primary-foreground/70 hover:text-accent transition-colors"
+                    className="text-sm text-background/70 hover:text-primary transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -115,40 +105,23 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-medium text-sm uppercase tracking-wider mb-4">
-              Company
+            <h4 className="font-[family-name:var(--font-display)] font-bold text-sm uppercase tracking-wider mb-4">
+              Fun Fact
             </h4>
-            <ul className="space-y-3">
-              {footerLinks.company.map((link) => (
-                <li key={link.name}>
-                  <Link 
-                    href={link.href} 
-                    className="text-sm text-primary-foreground/70 hover:text-accent transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <p className="text-sm text-background/70 leading-relaxed">
+              We&apos;ve shipped stickers to 47 states! Can you help us reach all 50?
+            </p>
           </div>
         </div>
 
         {/* Bottom */}
-        <div className="py-6 border-t border-primary-foreground/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-primary-foreground/60">
+        <div className="py-6 border-t border-background/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-background/60 flex items-center gap-1">
+            Made with <Heart className="w-4 h-4 text-destructive fill-destructive" /> by the Deane Brothers
+          </p>
+          <p className="text-sm text-background/60">
             &copy; {new Date().getFullYear()} Deane Decals. All rights reserved.
           </p>
-          <div className="flex gap-6">
-            <Link href="#" className="text-sm text-primary-foreground/60 hover:text-accent transition-colors">
-              Terms
-            </Link>
-            <Link href="#" className="text-sm text-primary-foreground/60 hover:text-accent transition-colors">
-              Privacy
-            </Link>
-            <Link href="#" className="text-sm text-primary-foreground/60 hover:text-accent transition-colors">
-              Cookies
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

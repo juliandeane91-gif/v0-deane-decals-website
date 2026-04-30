@@ -1,75 +1,90 @@
 import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Upload, CheckCircle, Truck, Palette } from "lucide-react"
+
+const steps = [
+  {
+    icon: Upload,
+    number: "1",
+    title: "Send Us Your Idea",
+    description: "Tell us what you want or send a picture!",
+    color: "bg-primary text-primary-foreground",
+  },
+  {
+    icon: Palette,
+    number: "2",
+    title: "We Make It Awesome",
+    description: "Our team creates your custom design",
+    color: "bg-accent text-accent-foreground",
+  },
+  {
+    icon: CheckCircle,
+    number: "3",
+    title: "You Approve It",
+    description: "Check it out and say if you love it",
+    color: "bg-chart-4 text-foreground",
+  },
+  {
+    icon: Truck,
+    number: "4",
+    title: "Fast Delivery!",
+    description: "We ship it right to your door",
+    color: "bg-destructive text-destructive-foreground",
+  },
+]
 
 export function CustomDesign() {
   return (
-    <section id="custom" className="py-24 lg:py-32 bg-primary text-primary-foreground">
+    <section id="custom" className="py-24 lg:py-32 bg-primary">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-widest text-primary-foreground/60">
-              Custom Design
-            </p>
-            <h2 className="mt-4 font-serif text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-balance">
-              Your vision,
-              <br />
-              <span className="italic">our craft</span>
-            </h2>
-            <p className="mt-8 text-lg text-primary-foreground/80 max-w-lg text-pretty">
-              Have a unique idea? We bring your custom designs to life with 
-              premium materials and precision cutting. Perfect for businesses, 
-              events, or personal projects.
-            </p>
-            
-            <div className="mt-8 space-y-4">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-accent-foreground text-sm font-medium">1</span>
-                </div>
-                <div>
-                  <p className="font-medium">Upload Your Design</p>
-                  <p className="text-primary-foreground/70 text-sm">Send us your artwork or ideas</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-accent-foreground text-sm font-medium">2</span>
-                </div>
-                <div>
-                  <p className="font-medium">Review & Approve</p>
-                  <p className="text-primary-foreground/70 text-sm">We create a digital proof for your approval</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-accent-foreground text-sm font-medium">3</span>
-                </div>
-                <div>
-                  <p className="font-medium">Receive Your Decals</p>
-                  <p className="text-primary-foreground/70 text-sm">Fast shipping with tracking included</p>
-                </div>
-              </div>
-            </div>
+        <div className="text-center mb-16">
+          <h2 className="font-[family-name:var(--font-display)] text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-primary-foreground text-balance">
+            Want Something <span className="text-chart-4">Special?</span>
+          </h2>
+          <p className="mt-6 text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto">
+            We can make custom stickers just for you! Your team logo, your name, 
+            your favorite player - whatever you can dream up!
+          </p>
+        </div>
 
+        {/* Steps */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {steps.map((step) => (
+            <div 
+              key={step.number}
+              className="bg-primary-foreground/10 backdrop-blur-sm rounded-2xl p-6 text-center border-2 border-primary-foreground/20 hover:border-primary-foreground/40 transition-colors"
+            >
+              <div className={`w-14 h-14 ${step.color} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+                <step.icon className="w-7 h-7" />
+              </div>
+              <div className="font-[family-name:var(--font-display)] text-sm font-bold text-chart-4 mb-2">
+                Step {step.number}
+              </div>
+              <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-primary-foreground mb-2">
+                {step.title}
+              </h3>
+              <p className="text-primary-foreground/70 text-sm">
+                {step.description}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div className="bg-primary-foreground/10 backdrop-blur-sm rounded-3xl p-8 md:p-12 border-2 border-primary-foreground/20 text-center">
+          <div className="max-w-2xl mx-auto">
+            <p className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-bold text-primary-foreground mb-4">
+              Custom stickers starting at just <span className="text-chart-4">$4.99!</span>
+            </p>
+            <p className="text-primary-foreground/80 mb-8">
+              Perfect for birthdays, sports teams, school projects, or just because you want something totally unique!
+            </p>
             <Button 
               size="lg" 
-              className="mt-10 bg-accent text-accent-foreground hover:bg-accent/90 rounded-full px-8 py-6"
+              className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full px-10 py-6 text-lg font-bold shadow-lg shadow-accent/30"
             >
               Start Your Custom Order
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-          </div>
-
-          <div className="relative">
-            <div className="aspect-square bg-primary-foreground/10 rounded-2xl flex items-center justify-center">
-              <div className="w-2/3 h-2/3 bg-primary-foreground/5 rounded-xl border border-primary-foreground/20 flex items-center justify-center">
-                <span className="font-serif text-8xl text-primary-foreground/20">D</span>
-              </div>
-            </div>
-            <div className="absolute -bottom-6 -left-6 bg-accent text-accent-foreground px-6 py-4 rounded-xl">
-              <p className="text-sm font-medium">Starting at</p>
-              <p className="font-serif text-2xl font-medium">$9.99</p>
-            </div>
           </div>
         </div>
       </div>
