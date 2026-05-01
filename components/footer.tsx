@@ -1,128 +1,20 @@
 import Link from "next/link"
-import { Input } from "@/components/ui/input"
+import { Instagram, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Instagram, Sparkles, Heart, Mail } from "lucide-react"
+import { Input } from "@/components/ui/input"
 
 const footerLinks = {
-  shop: [
-    { name: "Sports Stickers", href: "#" },
-    { name: "Laptop Decals", href: "#" },
-    { name: "Tumbler Stickers", href: "#" },
-    { name: "Custom Orders", href: "#custom" },
-  ],
-  help: [
-    { name: "FAQ", href: "#" },
-    { name: "Shipping Info", href: "#" },
-    { name: "Contact Us", href: "#" },
-  ],
+  shop: [{ name: "Team Decals", href: "#shop" }, { name: "Helmet Stickers", href: "#shop" }, { name: "Tumbler Stickers", href: "#shop" }, { name: "Custom Orders", href: "#custom" }],
+  help: [{ name: "Shipping Info", href: "#custom" }, { name: "Start an Order", href: "#custom" }, { name: "Contact", href: "#contact" }],
 }
 
 export function Footer() {
   return (
-    <footer className="bg-foreground text-background">
+    <footer id="contact" className="bg-black text-white">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Newsletter */}
-        <div className="py-16 border-b border-background/10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div>
-              <h3 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-bold flex items-center gap-2">
-                <Mail className="w-6 h-6 text-accent" />
-                Join the Sticker Squad!
-              </h3>
-              <p className="mt-2 text-background/70">
-                Get updates on new designs, special deals, and cool stuff!
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <Input 
-                type="email" 
-                placeholder="Your email address" 
-                className="bg-background/10 border-background/20 text-background placeholder:text-background/50 rounded-full px-6"
-              />
-              <Button className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground rounded-full px-6 font-bold shadow-lg shadow-primary/25">
-                Subscribe
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Links */}
-        <div className="py-16 grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg">
-                <Sparkles className="w-4 h-4 text-primary-foreground" />
-              </div>
-              <span className="font-[family-name:var(--font-display)] text-xl font-bold">
-                Deane Decals
-              </span>
-            </Link>
-            <p className="mt-4 text-sm text-background/70 leading-relaxed">
-              Awesome stickers made by two brothers who love sports and making cool stuff!
-            </p>
-            <div className="flex gap-4 mt-6">
-              <Link href="#" className="text-background/60 hover:text-accent transition-colors">
-                <Instagram className="h-5 w-5" />
-                <span className="sr-only">Instagram</span>
-              </Link>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-[family-name:var(--font-display)] font-bold text-sm uppercase tracking-wider mb-4 text-accent">
-              Shop
-            </h4>
-            <ul className="space-y-3">
-              {footerLinks.shop.map((link) => (
-                <li key={link.name}>
-                  <Link 
-                    href={link.href} 
-                    className="text-sm text-background/70 hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-[family-name:var(--font-display)] font-bold text-sm uppercase tracking-wider mb-4 text-accent">
-              Help
-            </h4>
-            <ul className="space-y-3">
-              {footerLinks.help.map((link) => (
-                <li key={link.name}>
-                  <Link 
-                    href={link.href} 
-                    className="text-sm text-background/70 hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-[family-name:var(--font-display)] font-bold text-sm uppercase tracking-wider mb-4 text-accent">
-              Fun Fact
-            </h4>
-            <p className="text-sm text-background/70 leading-relaxed">
-              We&apos;ve shipped stickers to 47 states! Can you help us reach all 50?
-            </p>
-          </div>
-        </div>
-
-        {/* Bottom */}
-        <div className="py-6 border-t border-background/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-background/60 flex items-center gap-1">
-            Made with <Heart className="w-4 h-4 text-destructive fill-destructive" /> by the Deane Brothers
-          </p>
-          <p className="text-sm text-background/60">
-            &copy; {new Date().getFullYear()} Deane Decals. All rights reserved.
-          </p>
-        </div>
+        <div className="border-b border-white/10 py-14"><div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2"><div><h3 className="flex items-center gap-3 text-2xl font-black md:text-3xl"><Mail className="h-6 w-6 text-red-500" />Stay Updated</h3><p className="mt-2 text-zinc-400">Get updates on new designs, order openings, and special offers.</p></div><div className="flex flex-col gap-3 sm:flex-row"><Input type="email" placeholder="Your email address" className="rounded-full border-white/10 bg-white/10 px-6 text-white placeholder:text-zinc-500" /><Button className="rounded-full bg-red-700 px-6 font-bold text-white hover:bg-red-600">Subscribe</Button></div></div></div>
+        <div className="grid grid-cols-2 gap-8 py-14 md:grid-cols-4"><div className="col-span-2 md:col-span-1"><Link href="/" className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white p-1.5"><img src="/logo.png" alt="Deane Decals logo" className="h-full w-full object-contain" /></div><span className="text-xl font-black">Deane <span className="text-red-600">Decals</span></span></Link><p className="mt-4 text-sm leading-6 text-zinc-400">Custom stickers and decals for teams, small businesses, and everyday use.</p><div className="mt-6 flex gap-4"><Link href="#" className="text-zinc-500 transition-colors hover:text-red-500"><Instagram className="h-5 w-5" /><span className="sr-only">Instagram</span></Link></div></div><div><h4 className="mb-4 text-sm font-black uppercase tracking-wider text-red-500">Shop</h4><ul className="space-y-3">{footerLinks.shop.map((link) => <li key={link.name}><Link href={link.href} className="text-sm text-zinc-400 transition-colors hover:text-white">{link.name}</Link></li>)}</ul></div><div><h4 className="mb-4 text-sm font-black uppercase tracking-wider text-red-500">Help</h4><ul className="space-y-3">{footerLinks.help.map((link) => <li key={link.name}><Link href={link.href} className="text-sm text-zinc-400 transition-colors hover:text-white">{link.name}</Link></li>)}</ul></div><div><h4 className="mb-4 text-sm font-black uppercase tracking-wider text-red-500">Contact</h4><p className="text-sm leading-6 text-zinc-400">Ready to start an order? Send your logo, quantity, size, and deadline.</p></div></div>
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 py-6 md:flex-row"><p className="text-sm text-zinc-500">Made by the Deane family.</p><p className="text-sm text-zinc-500">&copy; {new Date().getFullYear()} Deane Decals. All rights reserved.</p></div>
       </div>
     </footer>
   )
