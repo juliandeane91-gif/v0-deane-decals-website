@@ -43,7 +43,6 @@ export default function RootLayout({
     <html lang="en" className="bg-background">
       <body className={`${inter.variable} ${fredoka.variable} font-sans antialiased`}>
         {children}
-        {process.env.NODE_ENV === 'production' &&}
       </body>
     </html>
   )
