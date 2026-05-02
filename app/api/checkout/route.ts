@@ -15,7 +15,8 @@ export async function POST(req: Request) {
           quantity: 1,
           price_data: {
             currency: "usd",
-            unit_amount: 499,
+            unit_amount: body.total,
+			quantity: 1,
             product_data: {
               name: body.product || "Custom Deane Decals Order",
               description: body.description || "Custom sticker/decal order",
