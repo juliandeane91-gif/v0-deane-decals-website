@@ -1,38 +1,90 @@
-import {
-  consumeStream,
-  convertToModelMessages,
-  streamText,
-  UIMessage,
-} from 'ai'
+import { NextResponse } from "next/server"
+import OpenAI from "openai"
 
-export const maxDuration = 30
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+})
 
 export async function POST(req: Request) {
-  const { messages }: { messages: UIMessage[] } = await req.json()
+  try {
+    if (!process.env.OPENAI_API_KEY) {
+      return NextResponse.json(
+        { error: "Missing OPENAI_API_KEY" },
+        { status: 500 }
+      )
+    }
 
-  const result = streamText({
-    model: 'openai/gpt-4o-mini',
-    system: `You are a fun, creative design assistant for Deane Decals, a sticker and decal business run by two awesome brothers ages 7 and 9. 
+    const body = await req.json()
 
-Your job is to help customers come up with cool sticker and decal ideas! You specialize in:
-- Sports team stickers (football, basketball, soccer, baseball, hockey, etc.)
-- Laptop decals and skins
-- Tumbler and water bottle stickers
-- Custom designs for any occasion
+    if (!body || !Array.isArray(body.messages)) {
+      return NextResponse.json(
+        { error: "Invalid request format. Expected messages array." },
+        { status: 400 }
+      )
+    }
 
-Be enthusiastic, friendly, and creative! Use language that's fun but still professional. When suggesting designs:
-1. Ask about their favorite teams, colors, or themes
-2. Suggest specific design elements (logos, mascots, patterns, text)
-3. Recommend sizes and placement ideas
-4. Get excited about their ideas!
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: `
+You are the Build Your Sticker assistant for Deane Decals.
 
-Keep responses concise but helpful. Remember, this is a kid-run business so keep the vibe positive and encouraging!`,
-    messages: await convertToModelMessages(messages),
-    abortSignal: req.signal,
-  })
+Business:
+Deane Decals makes custom stickers and decals for teams, brands, helmets, bottles, tumblers, cups, glass, windows, laptops, cars, and business logo packs.
 
-  return result.toUIMessageStreamResponse({
-    originalMessages: messages,
-    consumeSseStream: consumeStream,
-  })
+Pricing:
+Custom Sticker Sheets:
+- 1 sheet = $8
+- 2 sheets = $15
+- 3 sheets = $20
+- 10+ sheets = $7 each
+- 20+ sheets = $6 each
+
+Clear Stickers:
+- 1–20 = $3.50 each
+- 20–50 = $3.25 each
+- 50+ = $3.00 each
+
+Shipping:
+- Local pickup in Warner Robins = free
+- Standard sticker mailer = $1.50
+- Tracked shipping = $4.99
+- Bulk / team order shipping = $7.99
+
+Rush Orders:
+- Small rush order = +$10
+- Large rush order, 10+ items/sheets = +$25
+
+Your job:
+- Help customers choose sticker type
+- Recommend quantity based on their use case
+- Explain pricing clearly
+- Ask for logo/design details
+- Recommend pickup or shipping
+- Mention rush options when timing matters
+- Guide them toward checkout
+
+Keep replies short, friendly, and practical.
+Do not promise production timelines beyond rush order guidance.
+          `,
+        },
+        ...body.messages,
+      ],
+    })
+
+    return NextResponse.json({
+      text:
+        completion.choices[0]?.message?.content ||
+        "I can help with your sticker order. What are you looking to make?",
+    })
+  } catch (err: any) {
+    console.error("AI ERROR:", err)
+
+    return NextResponse.json(
+      { error: err.message || "AI assistant failed" },
+      { status: 500 }
+    )
+  }
 }
