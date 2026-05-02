@@ -27,8 +27,8 @@ export async function POST(req: Request) {
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
     })
-
-    return NextResponse.json({ url: session.url })
+    console.log("Stripe session:", session)
+    return NextResponse.json({ url: session.url ?? "" })
   } catch (err) {
     console.error(err)
     return NextResponse.json({ error: "Checkout failed" }, { status: 500 })
