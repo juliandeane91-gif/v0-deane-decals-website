@@ -1,19 +1,201 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { useChat } from "@ai-sdk/react"
-import { DefaultChatTransport } from "ai"
 import { Button } from "@/components/ui/button"
 import { Loader2, MessageCircle, Send, Sparkles, X } from "lucide-react"
+
+type ChatMessage = {
+  id: string
+  role: "user" | "assistant"
+  parts: { type: "text"; text: string }[]
+}
 
 export function DesignAssistant() {
   const [isOpen, setIsOpen] = useState(false)
   const [input, setInput] = useState("")
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [status, setStatus] = useState<"idle" | "loading">("idle")
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const { messages, sendMessage, status } = useChat({ transport: new DefaultChatTransport({ api: "/api/chat" }) })
-  const isLoading = status === "streaming" || status === "submitted"
-  useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }) }, [messages])
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); if (!input.trim() || isLoading) return; sendMessage({ text: input }); setInput("") }
-  const suggestedPrompts = ["I need a decal pack for my baseball team.", "Help me size a tumbler sticker.", "What information do you need for a logo sticker order?"]
-  return <><button onClick={() => setIsOpen(true)} className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-red-700 px-5 py-3 text-white shadow-lg shadow-red-950/40 transition-all hover:scale-105 hover:bg-red-600 hover:shadow-xl ${isOpen ? "hidden" : ""}`}><Sparkles className="h-5 w-5" /><span className="font-semibold">Build Your Sticker</span></button>{isOpen && <div className="fixed bottom-6 right-6 z-50 flex h-[500px] w-[calc(100vw-2rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-black text-white shadow-2xl"><div className="flex items-center justify-between border-b border-white/10 bg-zinc-950 px-4 py-3"><div className="flex items-center gap-2"><div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-700"><Sparkles className="h-4 w-4 text-white" /></div><div><h3 className="font-bold">Build Your Sticker</h3><p className="text-xs text-zinc-400">Design, order, and shipping help</p></div></div><button onClick={() => setIsOpen(false)} className="rounded-full p-1 transition-colors hover:bg-white/10"><X className="h-5 w-5" /></button></div><div className="flex-1 overflow-y-auto p-4">{messages.length === 0 ? <div className="flex h-full flex-col items-center justify-center text-center"><div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-700/15"><MessageCircle className="h-8 w-8 text-red-500" /></div><h4 className="mb-2 text-lg font-black text-white">What are we making?</h4><p className="mb-4 text-sm leading-6 text-zinc-400">I can help plan a sticker order, recommend sizes, gather details, and prepare your design request.</p><div className="flex flex-col gap-2">{suggestedPrompts.map((prompt) => <button key={prompt} onClick={() => sendMessage({ text: prompt })} className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-zinc-200 transition-all hover:border-red-700/60 hover:bg-red-700/10">{prompt}</button>)}</div></div> : <div className="space-y-4">{messages.map((message) => <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}><div className={`max-w-[85%] rounded-2xl px-4 py-2 ${message.role === "user" ? "bg-red-700 text-white" : "bg-zinc-900 text-zinc-100"}`}>{message.parts.map((part, index) => part.type === "text" ? <p key={index} className="whitespace-pre-wrap text-sm">{part.text}</p> : null)}</div></div>)}{isLoading && <div className="flex justify-start"><div className="flex items-center gap-2 rounded-2xl bg-zinc-900 px-4 py-2"><Loader2 className="h-4 w-4 animate-spin text-red-500" /><span className="text-sm text-zinc-400">Thinking...</span></div></div>}<div ref={messagesEndRef} /></div>}</div><form onSubmit={handleSubmit} className="border-t border-white/10 p-3"><div className="flex gap-2"><input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Describe your sticker order..." className="flex-1 rounded-full border border-white/10 bg-zinc-900 px-4 py-2 text-sm text-white placeholder:text-zinc-500 focus:border-red-700 focus:outline-none focus:ring-2 focus:ring-red-700/20" disabled={isLoading} /><Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="h-10 w-10 rounded-full bg-red-700 text-white hover:bg-red-600"><Send className="h-4 w-4" /></Button></div></form></div>}</>
+
+  const isLoading = status === "loading"
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages])
+
+  async function sendMessage(message: { text: string }) {
+    if (isLoading) return
+
+    const userMessage: ChatMessage = {
+      id: crypto.randomUUID(),
+      role: "user",
+      parts: [{ type: "text", text: message.text }],
+    }
+
+    setMessages((current) => [...current, userMessage])
+    setStatus("loading")
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [
+            ...messages.map((m) => ({
+              role: m.role,
+              content: m.parts.map((p) => p.text).join("\n"),
+            })),
+            { role: "user", content: message.text },
+          ],
+        }),
+      })
+
+      const data = await res.json()
+
+      const assistantMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        parts: [
+          {
+            type: "text",
+            text: data.text || data.error || "Sorry, I had trouble responding.",
+          },
+        ],
+      }
+
+      setMessages((current) => [...current, assistantMessage])
+    } catch {
+      setMessages((current) => [
+        ...current,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          parts: [{ type: "text", text: "Sorry, the assistant is having trouble right now." }],
+        },
+      ])
+    } finally {
+      setStatus("idle")
+    }
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!input.trim() || isLoading) return
+    sendMessage({ text: input })
+    setInput("")
+  }
+
+  const suggestedPrompts = [
+    "I need a decal pack for my baseball team.",
+    "Help me size a tumbler sticker.",
+    "What information do you need for a logo sticker order?",
+  ]
+
+  return (
+    <>
+      <button
+        onClick={() => setIsOpen(true)}
+        className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-red-700 px-5 py-3 text-white shadow-lg shadow-red-950/40 transition-all hover:scale-105 hover:bg-red-600 hover:shadow-xl ${isOpen ? "hidden" : ""}`}
+      >
+        <Sparkles className="h-5 w-5" />
+        <span className="font-semibold">Build Your Sticker</span>
+      </button>
+
+      {isOpen && (
+        <div className="fixed bottom-6 right-6 z-50 flex h-[500px] w-[calc(100vw-2rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-black text-white shadow-2xl">
+          <div className="flex items-center justify-between border-b border-white/10 bg-zinc-950 px-4 py-3">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-700">
+                <Sparkles className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <h3 className="font-bold">Build Your Sticker</h3>
+                <p className="text-xs text-zinc-400">Design, order, and shipping help</p>
+              </div>
+            </div>
+            <button onClick={() => setIsOpen(false)} className="rounded-full p-1 transition-colors hover:bg-white/10">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-4">
+            {messages.length === 0 ? (
+              <div className="flex h-full flex-col items-center justify-center text-center">
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-700/15">
+                  <MessageCircle className="h-8 w-8 text-red-500" />
+                </div>
+                <h4 className="mb-2 text-lg font-black text-white">What are we making?</h4>
+                <p className="mb-4 text-sm leading-6 text-zinc-400">
+                  I can help plan a sticker order, recommend sizes, gather details, and prepare your design request.
+                </p>
+                <div className="flex flex-col gap-2">
+                  {suggestedPrompts.map((prompt) => (
+                    <button
+                      key={prompt}
+                      onClick={() => sendMessage({ text: prompt })}
+                      className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-zinc-200 transition-all hover:border-red-700/60 hover:bg-red-700/10"
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div
+                      className={`max-w-[85%] rounded-2xl px-4 py-2 ${
+                        message.role === "user" ? "bg-red-700 text-white" : "bg-zinc-900 text-zinc-100"
+                      }`}
+                    >
+                      {message.parts.map((part, index) =>
+                        part.type === "text" ? (
+                          <p key={index} className="whitespace-pre-wrap text-sm">
+                            {part.text}
+                          </p>
+                        ) : null,
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="flex items-center gap-2 rounded-2xl bg-zinc-900 px-4 py-2">
+                      <Loader2 className="h-4 w-4 animate-spin text-red-500" />
+                      <span className="text-sm text-zinc-400">Thinking...</span>
+                    </div>
+                  </div>
+                )}
+
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
+
+          <form onSubmit={handleSubmit} className="border-t border-white/10 p-3">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Describe your sticker order..."
+                className="flex-1 rounded-full border border-white/10 bg-zinc-900 px-4 py-2 text-sm text-white placeholder:text-zinc-500 focus:border-red-700 focus:outline-none focus:ring-2 focus:ring-red-700/20"
+                disabled={isLoading}
+              />
+              <Button
+                type="submit"
+                size="icon"
+                disabled={isLoading || !input.trim()}
+                className="h-10 w-10 rounded-full bg-red-700 text-white hover:bg-red-600"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+          </form>
+        </div>
+      )}
+    </>
+  )
 }
