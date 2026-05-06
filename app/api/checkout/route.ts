@@ -1,40 +1,50 @@
-import { NextResponse } from "next/server"
-import Stripe from "stripe"
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+import { streamText } from "ai"
+import { openai } from "@ai-sdk/openai"
 
 export async function POST(req: Request) {
-  try {
-    const body = await req.json()
-    const total = Number(body.total)
+  const { messages } = await req.json()
 
-    if (!total || total < 50) {
-      return NextResponse.json({ error: "Invalid total" }, { status: 400 })
-    }
+  const result = await streamText({
+    model: openai("gpt-4o-mini"),
+    system: `
+You are an expert sticker design assistant for Deane Decals.
 
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          quantity: 1,
-          price_data: {
-            currency: "usd",
-            unit_amount: total,
-            product_data: {
-              name: body.product || "Custom Deane Decals Order",
-              description: body.description || "Custom sticker/decal order",
-            },
-          },
-        },
-      ],
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
-    })
+Your job is to help customers:
+- Choose sticker type (sticker sheets or clear stickers)
+- Recommend quantities
+- Explain pricing tiers
+- Suggest sizes and use cases (helmets, tumblers, teams, business logos)
+- Explain shipping vs local pickup (Warner Robins pickup available)
+- Offer rush order options
 
-    return NextResponse.json({ url: session.url ?? "" })
-  } catch (err) {
-    console.error(err)
-    return NextResponse.json({ error: "Checkout failed" }, { status: 500 })
-  }
+Pricing rules:
+Sticker Sheets:
+1 = $8
+2 = $15
+3 = $20
+10+ = $7 each
+20+ = $6 each
+
+Clear Stickers:
+1–20 = $3.50 each
+20–50 = $3.25 each
+50+ = $3.00 each
+
+Shipping:
+- Local pickup (Warner Robins) = Free
+- Standard = $1.50
+- Tracked = $4.99
+- Bulk = $7.99
+
+Rush:
+- Small orders = +$10
+- Large (10+) = +$25
+
+Be conversational, helpful, and guide the user toward placing an order.
+Keep responses short and practical.
+`,
+    messages,
+  })
+
+  return result.toDataStreamResponse()
 }
