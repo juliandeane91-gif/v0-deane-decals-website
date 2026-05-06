@@ -1,50 +1,75 @@
-import { streamText } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { NextResponse } from "next/server"
+import Stripe from "stripe"
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 export async function POST(req: Request) {
-  const { messages } = await req.json()
+  try {
+    const body = await req.json()
 
-  const result = await streamText({
-    model: openai("gpt-4o-mini"),
-    system: `
-You are an expert sticker design assistant for Deane Decals.
+    const total = Number(body.total)
 
-Your job is to help customers:
-- Choose sticker type (sticker sheets or clear stickers)
-- Recommend quantities
-- Explain pricing tiers
-- Suggest sizes and use cases (helmets, tumblers, teams, business logos)
-- Explain shipping vs local pickup (Warner Robins pickup available)
-- Offer rush order options
+    if (!total || total < 50) {
+      return NextResponse.json(
+        { error: "Invalid total amount" },
+        { status: 400 }
+      )
+    }
 
-Pricing rules:
-Sticker Sheets:
-1 = $8
-2 = $15
-3 = $20
-10+ = $7 each
-20+ = $6 each
+    const productName =
+      body.product === "clear-stickers"
+        ? "Clear Stickers"
+        : "Custom Sticker Sheets"
 
-Clear Stickers:
-1–20 = $3.50 each
-20–50 = $3.25 each
-50+ = $3.00 each
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
 
-Shipping:
-- Local pickup (Warner Robins) = Free
-- Standard = $1.50
-- Tracked = $4.99
-- Bulk = $7.99
+      payment_method_types: ["card"],
 
-Rush:
-- Small orders = +$10
-- Large (10+) = +$25
+      line_items: [
+        {
+          quantity: 1,
+          price_data: {
+            currency: "usd",
 
-Be conversational, helpful, and guide the user toward placing an order.
-Keep responses short and practical.
-`,
-    messages,
-  })
+            unit_amount: total,
 
-  return result.toDataStreamResponse()
+            product_data: {
+              name: productName,
+              description: body.rush
+                ? "Rush custom sticker order"
+                : "Custom sticker order",
+            },
+          },
+        },
+      ],
+
+      metadata: {
+        customerName: body.customerName || "",
+        customerEmail: body.customerEmail || "",
+        product: body.product || "",
+        quantity: String(body.quantity || ""),
+        shipping: body.shipping || "",
+        rush: String(body.rush || false),
+        logoReady: body.logoReady || "",
+        notes: body.notes || "",
+      },
+
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
+    })
+
+    return NextResponse.json({
+      url: session.url,
+    })
+  } catch (err: any) {
+    console.error("CHECKOUT ERROR:", err)
+
+    return NextResponse.json(
+      {
+        error: err.message || "Checkout failed",
+      },
+      { status: 500 }
+    )
+  }
 }
