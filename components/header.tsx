@@ -16,20 +16,6 @@ const navigation = [
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
 
-  async function startCheckout() {
-    const res = await fetch("/api/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        product: "Custom Sticker Order Deposit",
-        description: "Deposit to start a custom order",
-      }),
-    })
-
-    const data = await res.json()
-    window.location.href = data.url
-  }
-
   return (
     <header className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur-md">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
@@ -57,12 +43,11 @@ export function Header() {
         <div className="flex items-center gap-3">
           
           {/* CHECKOUT BUTTON */}
-          <Button
-            onClick={startCheckout}
-            className="hidden rounded-full bg-red-700 px-5 font-bold text-white hover:bg-red-600 sm:flex"
-          >
-            Start Custom Order
-          </Button>
+          <Link href="#custom">
+            <Button className="hidden rounded-full bg-red-700 px-5 font-bold text-white hover:bg-red-600 sm:flex">
+              Start Custom Order
+            </Button>
+          </Link>
 
           <Button variant="ghost" size="icon" className="relative text-white">
             <ShoppingBag className="h-5 w-5" />
@@ -84,15 +69,11 @@ export function Header() {
                   </Link>
                 ))}
 
-                <Button
-                  onClick={() => {
-                    setIsOpen(false)
-                    startCheckout()
-                  }}
-                  className="mt-4 w-full bg-red-700 font-bold"
-                >
-                  Start Custom Order
-                </Button>
+                <Link href="#custom" onClick={() => setIsOpen(false)}>
+                  <Button className="mt-4 w-full bg-red-700 font-bold">
+                    Start Custom Order
+                  </Button>
+                </Link>
               </div>
             </SheetContent>
           </Sheet>

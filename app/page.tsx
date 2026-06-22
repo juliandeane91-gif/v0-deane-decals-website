@@ -50,6 +50,52 @@ function SectionIntro() {
   )
 }
 
+function HowItWorks() {
+  const steps = [
+    {
+      title: "Share your idea",
+      description: "Tell us what you need, your quantity, and send your logo or design notes.",
+    },
+    {
+      title: "Approve the proof",
+      description: "We send a proof before anything is printed so you can confirm the look.",
+    },
+    {
+      title: "Pickup or shipping",
+      description: "Choose Warner Robins pickup or shipping once your order is ready.",
+    },
+  ]
+
+  return (
+    <section id="process" className="bg-[#080b12] px-6 py-16 text-white lg:py-20">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-10 text-center">
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-red-500">
+            How It Works
+          </p>
+          <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">
+            Three simple steps from idea to finished decals.
+          </h2>
+        </div>
+        <div className="grid gap-5 md:grid-cols-3">
+          {steps.map((step, index) => (
+            <div
+              key={step.title}
+              className="rounded-2xl border border-white/10 bg-white/[0.03] p-6"
+            >
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-red-700 text-sm font-black">
+                {index + 1}
+              </div>
+              <h3 className="text-xl font-black">{step.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-300">{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#05070b] text-white">
@@ -57,6 +103,7 @@ export default function Home() {
       <Hero />
       <TrustStrip />
       <SectionIntro />
+      <HowItWorks />
       <DesignAssistant />
       <Testimonials />
       <Products />

@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server"
-import Stripe from "stripe"
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+import { getStripe } from "@/lib/stripe"
 
 export async function POST(req: Request) {
   try {
+    const stripe = getStripe()
     const body = await req.json()
 
     const total = Number(body.total)
@@ -55,8 +54,8 @@ export async function POST(req: Request) {
         notes: body.notes || "",
       },
 
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin}/success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin}/cancel`,
     })
 
     return NextResponse.json({

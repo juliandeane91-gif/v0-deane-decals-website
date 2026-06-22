@@ -71,7 +71,7 @@ export function CustomDesign() {
     const data = await res.json()
 
     if (!data.url) {
-      alert("Checkout failed — no Stripe URL returned")
+      alert(data.error || "Checkout failed — no Stripe URL returned")
       return
     }
 
