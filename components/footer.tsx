@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Instagram, Mail, Phone } from "lucide-react"
+import { Facebook, Instagram, Mail, Phone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
@@ -9,6 +9,7 @@ const EMAIL = "hello@deanedecals.com"
 const EMAIL_HREF = "mailto:hello@deanedecals.com"
 const INSTAGRAM_HANDLE = "deanedecals"
 const INSTAGRAM_HREF = "https://www.instagram.com/deanedecals/"
+const FACEBOOK_HREF = "https://www.facebook.com/DeaneDecals"
 
 const footerLinks = {
   shop: [
@@ -66,6 +67,15 @@ export function Footer() {
               Custom stickers and decals for teams, small businesses, and everyday use.
             </p>
             <div className="mt-6 flex gap-4">
+              <a
+                href={FACEBOOK_HREF}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-zinc-500 transition-colors hover:text-red-500"
+              >
+                <Facebook className="h-5 w-5" />
+                <span className="sr-only">Facebook</span>
+              </a>
               <a
                 href={INSTAGRAM_HREF}
                 target="_blank"
@@ -131,6 +141,15 @@ export function Footer() {
             >
               <Instagram className="h-4 w-4 text-red-500" />
               @{INSTAGRAM_HANDLE}
+            </a>
+            <a
+              href={FACEBOOK_HREF}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-white transition-colors hover:text-red-500"
+            >
+              <Facebook className="h-4 w-4 text-red-500" />
+              Deane Decals on Facebook
             </a>
           </div>
         </div>
