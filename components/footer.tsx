@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input"
 
 const PHONE_DISPLAY = "478-954-1888"
 const PHONE_HREF = "tel:+14789541888"
+const EMAIL = "hello@deanedecals.com"
+const EMAIL_HREF = "mailto:hello@deanedecals.com"
 const INSTAGRAM_HANDLE = "deanedecals"
 const INSTAGRAM_HREF = "https://www.instagram.com/deanedecals/"
 
@@ -113,6 +115,13 @@ export function Footer() {
             >
               <Phone className="h-4 w-4 text-red-500" />
               {PHONE_DISPLAY}
+            </a>
+            <a
+              href={EMAIL_HREF}
+              className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-white transition-colors hover:text-red-500"
+            >
+              <Mail className="h-4 w-4 text-red-500" />
+              {EMAIL}
             </a>
             <a
               href={INSTAGRAM_HREF}
