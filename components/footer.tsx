@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { Facebook, Instagram, Mail, Phone } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 
 const PHONE_DISPLAY = "478-954-1888"
 const PHONE_HREF = "tel:+14789541888"
@@ -19,7 +18,8 @@ const footerLinks = {
     { name: "Custom Orders", href: "#custom" },
   ],
   help: [
-    { name: "Shipping Info", href: "#custom" },
+    { name: "FAQ", href: "#faq" },
+    { name: "Shipping Info", href: "#faq" },
     { name: "Start an Order", href: "#custom" },
     { name: "Contact", href: "#contact" },
   ],
@@ -41,13 +41,19 @@ export function Footer() {
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Input
-                type="email"
-                placeholder="Your email address"
-                className="rounded-full border-white/10 bg-white/10 px-6 text-white placeholder:text-zinc-500"
-              />
-              <Button className="rounded-full bg-red-700 px-6 font-bold text-white hover:bg-red-600">
-                Subscribe
+              <Button asChild className="rounded-full bg-red-700 px-6 font-bold text-white hover:bg-red-600">
+                <a href="mailto:hello@deanedecals.com?subject=Deane%20Decals%20Updates">
+                  Email Us for Updates
+                </a>
+              </Button>
+              <Button asChild variant="outline" className="rounded-full border-white/20 bg-transparent px-6 font-bold text-white hover:bg-white/10">
+                <a
+                  href={INSTAGRAM_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Follow on Instagram
+                </a>
               </Button>
             </div>
           </div>

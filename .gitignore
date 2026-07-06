@@ -16,3 +16,4 @@ env.local.txt
 .env.local
 .next/
 .DS_Store
+.vercel

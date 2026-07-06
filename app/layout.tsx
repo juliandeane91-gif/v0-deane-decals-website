@@ -12,9 +12,19 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Deane Decals | Awesome Stickers by Kids, for Everyone!',
-  description: 'Cool sports team stickers, laptop decals, and tumbler stickers! Made by two brothers who love sports and awesome designs.',
-  generator: 'v0.app',
+  title: 'Deane Decals | Custom Stickers & Team Decals',
+  description:
+    'Custom stickers, team decals, helmet stickers, and business logo decals in Warner Robins, GA. Proof before print, local pickup, and shipping available.',
+  metadataBase: new URL('https://deanedecals.com'),
+  openGraph: {
+    title: 'Deane Decals | Custom Stickers & Team Decals',
+    description:
+      'Custom stickers, team decals, helmet stickers, and business logo decals. Proof before print, local pickup, and shipping available.',
+    url: 'https://deanedecals.com',
+    siteName: 'Deane Decals',
+    locale: 'en_US',
+    type: 'website',
+  },
   icons: {
     icon: [
       {
