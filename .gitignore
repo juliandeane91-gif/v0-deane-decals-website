@@ -16,6 +16,7 @@ env.local.txt
 .env.local
 .stripe-webhook-secret.tmp
 resend-dns-records.json
+setup-result.json
 .next/
 .DS_Store
 .vercel
