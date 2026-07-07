@@ -20,10 +20,14 @@ export async function POST(req: Request) {
         ? "Clear Stickers"
         : "Custom Sticker Sheets"
 
+    const customerEmail = String(body.customerEmail || "").trim()
+    const customerName = String(body.customerName || "").trim()
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
 
       payment_method_types: ["card"],
+      customer_email: customerEmail || undefined,
 
       line_items: [
         {
@@ -44,8 +48,8 @@ export async function POST(req: Request) {
       ],
 
       metadata: {
-        customerName: body.customerName || "",
-        customerEmail: body.customerEmail || "",
+        customerName,
+        customerEmail,
         product: body.product || "",
         quantity: String(body.quantity || ""),
         shipping: body.shipping || "",
