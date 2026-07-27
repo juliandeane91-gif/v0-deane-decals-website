@@ -1,6 +1,7 @@
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { Products } from "@/components/products"
+import { Pricing } from "@/components/pricing"
 import { CustomDesign } from "@/components/custom-design"
 import { Testimonials } from "@/components/testimonials"
 import { About } from "@/components/about"
@@ -108,6 +109,7 @@ export default function Home() {
       <DesignAssistant />
       <Testimonials />
       <Products />
+      <Pricing />
       <CustomDesign />
       <About />
       <FAQ />

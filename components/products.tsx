@@ -13,95 +13,47 @@ import {
 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { featuredProducts, formatPriceLabel } from "@/lib/products"
 
 const categories = [
   {
-    name: "Team Decals",
-    description: "Custom packs for baseball, football, cheer, school teams, and clubs.",
+    name: "Stickers & Decals",
+    description: "Premium vinyl stickers, sticker sheets, and custom vinyl decals in multiple sizes.",
+    icon: Tag,
+  },
+  {
+    name: "Sports Products",
+    description: "Helmet stickers, decal kits, and trading bundles for teams and athletes.",
     icon: Trophy,
   },
   {
-    name: "Helmet Stickers",
-    description: "Bold decals for helmets, gear, bags, and sports equipment.",
+    name: "Temporary Tattoos",
+    description: "Standard and glow-in-the-dark tattoos with bulk pricing for events and teams.",
     icon: ShieldCheck,
   },
   {
-    name: "Tumbler Stickers",
-    description: "Waterproof options for cups, bottles, coolers, and drinkware.",
-    icon: CupSoda,
-  },
-  {
-    name: "Business Logos",
-    description: "Clean brand stickers for packaging, laptops, windows, and events.",
+    name: "Labels & Accessories",
+    description: "Thermal labels, chapstick labels, acrylic pins, and custom buttons.",
     icon: Building2,
   },
 ]
 
-type Product = {
-  name: string
-  category: string
-  price: string
-  description: string
-  icon: LucideIcon
-  accent: string
-  preview: string
+const featuredIcons: Record<string, LucideIcon> = {
+  "sticker-sheet": Tag,
+  "sports-helmet-sticker": ShieldCheck,
+  "vinyl-decal-medium": Car,
+  "temp-tattoos-12": CupSoda,
+  "bundle-medium": Trophy,
+  "mahjong-complete": Tag,
 }
 
-const products: Product[] = [
-  {
-    name: "Custom Team Pack",
-    category: "Teams",
-    price: "Quote Based",
-    description: "Bulk sticker packs for players, parents, and coaches.",
-    icon: Trophy,
-    accent: "from-red-800 via-red-950 to-black",
-    preview: "TEAM PACK",
-  },
-  {
-    name: "Helmet Decal Set",
-    category: "Sports",
-    price: "From $8.99",
-    description: "Small decals sized for helmets, bats, bags, and gear.",
-    icon: ShieldCheck,
-    accent: "from-zinc-700 via-zinc-900 to-black",
-    preview: "HELMET SET",
-  },
-  {
-    name: "Business Logo Stickers",
-    category: "Branding",
-    price: "From $24.99",
-    description: "Logo stickers for boxes, bags, laptops, and promos.",
-    icon: Building2,
-    accent: "from-white/20 via-zinc-800 to-black",
-    preview: "LOGO PACK",
-  },
-  {
-    name: "Tumbler Decal Bundle",
-    category: "Drinkware",
-    price: "From $12.99",
-    description: "Waterproof decals for cups, bottles, and coolers.",
-    icon: CupSoda,
-    accent: "from-red-700/80 via-zinc-900 to-black",
-    preview: "TUMBLER",
-  },
-  {
-    name: "Car / Window Decal",
-    category: "Vinyl",
-    price: "From $9.99",
-    description: "Durable vinyl-style decals for glass and vehicles.",
-    icon: Car,
-    accent: "from-zinc-600 via-zinc-900 to-black",
-    preview: "WINDOW",
-  },
-  {
-    name: "Custom Name Decals",
-    category: "Personalized",
-    price: "From $6.99",
-    description: "Names, numbers, initials, and custom lettering.",
-    icon: Tag,
-    accent: "from-red-900/70 via-black to-zinc-950",
-    preview: "CUSTOM NAME",
-  },
+const featuredAccents = [
+  "from-red-800 via-red-950 to-black",
+  "from-zinc-700 via-zinc-900 to-black",
+  "from-white/20 via-zinc-800 to-black",
+  "from-red-700/80 via-zinc-900 to-black",
+  "from-zinc-600 via-zinc-900 to-black",
+  "from-red-900/70 via-black to-zinc-950",
 ]
 
 export function Products() {
@@ -116,7 +68,7 @@ export function Products() {
             </h2>
           </div>
           <p className="max-w-xl text-lg leading-8 text-zinc-300">
-            Start with one of our common order types, then customize size, finish, quantity, and design.
+            Browse our full product catalog and pricing, then customize size, finish, quantity, and design.
           </p>
         </div>
 
@@ -139,43 +91,58 @@ export function Products() {
 
         <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <h3 className="text-2xl font-black md:text-3xl">Popular order types</h3>
-          <Button variant="link" asChild className="h-auto p-0 font-bold text-red-500 hover:text-red-400">
-            <Link href="#custom">
-              Start a custom quote
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+          <div className="flex flex-wrap gap-3">
+            <Button variant="link" asChild className="h-auto p-0 font-bold text-red-500 hover:text-red-400">
+              <Link href="#pricing">
+                View full pricing
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button variant="link" asChild className="h-auto p-0 font-bold text-zinc-300 hover:text-red-400">
+              <Link href="#custom">
+                Start a custom quote
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <Card
-              key={product.name}
-              className="border-white/10 bg-black text-white transition hover:-translate-y-1 hover:border-red-700/60"
-            >
-              <CardContent className="p-6">
-                <div
-                  className={`mb-5 flex aspect-[4/3] flex-col items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br ${product.accent} p-5`}
-                >
-                  <product.icon className="mb-4 h-10 w-10 text-red-400" />
-                  <span className="text-xs font-black uppercase tracking-[0.35em] text-white/80">
-                    {product.preview}
-                  </span>
-                </div>
-                <p className="text-xs font-black uppercase tracking-[0.25em] text-red-500">
-                  {product.category}
-                </p>
-                <h4 className="mt-2 text-xl font-black">{product.name}</h4>
-                <p className="mt-2 min-h-12 text-sm leading-6 text-zinc-400">{product.description}</p>
-                <div className="mt-5 flex items-center justify-between">
-                  <p className="font-black text-white">{product.price}</p>
-                  <Button size="sm" asChild className="rounded-full bg-red-700 text-white hover:bg-red-600">
-                    <Link href="#custom">Customize</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          {featuredProducts.map((product, index) => {
+            const Icon = featuredIcons[product.id] ?? Tag
+            const accent = featuredAccents[index % featuredAccents.length]
+
+            return (
+              <Card
+                key={product.id}
+                className="border-white/10 bg-black text-white transition hover:-translate-y-1 hover:border-red-700/60"
+              >
+                <CardContent className="p-6">
+                  <div
+                    className={`mb-5 flex aspect-[4/3] flex-col items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br ${accent} p-5`}
+                  >
+                    <Icon className="mb-4 h-10 w-10 text-red-400" />
+                    <span className="text-center text-xs font-black uppercase tracking-[0.2em] text-white/80">
+                      {product.category}
+                    </span>
+                  </div>
+                  <p className="text-xs font-black uppercase tracking-[0.25em] text-red-500">
+                    {product.category}
+                  </p>
+                  <h4 className="mt-2 text-xl font-black">{product.name}</h4>
+                  <p className="mt-2 min-h-12 text-sm leading-6 text-zinc-400">
+                    {product.description ?? "Custom order with proof before print."}
+                  </p>
+                  <div className="mt-5 flex items-center justify-between">
+                    <p className="font-black text-white">{formatPriceLabel(product)}</p>
+                    <Button size="sm" asChild className="rounded-full bg-red-700 text-white hover:bg-red-600">
+                      <Link href={`#custom?product=${product.id}`}>Order</Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
       </div>
     </section>

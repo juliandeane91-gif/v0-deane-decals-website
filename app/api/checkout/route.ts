@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { getProductById } from "@/lib/products"
 import { getStripe } from "@/lib/stripe"
 
 export async function POST(req: Request) {
@@ -15,10 +16,8 @@ export async function POST(req: Request) {
       )
     }
 
-    const productName =
-      body.product === "clear-stickers"
-        ? "Clear Stickers"
-        : "Custom Sticker Sheets"
+    const catalogProduct = getProductById(String(body.product || ""))
+    const productName = catalogProduct?.name || "Custom Order"
 
     const customerEmail = String(body.customerEmail || "").trim()
     const customerName = String(body.customerName || "").trim()

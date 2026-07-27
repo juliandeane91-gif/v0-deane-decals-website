@@ -1,12 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
+import {
+  calculateOrderTotal,
+  catalogProducts,
+  formatPriceLabel,
+  getProductById,
+  PRODUCT_CATEGORIES,
+  SHIPPING_OPTIONS,
+} from "@/lib/products"
 
 export function CustomDesign() {
-  const [type, setType] = useState("sticker-sheets")
+  const [productId, setProductId] = useState("sticker-sheet")
   const [quantity, setQuantity] = useState(1)
-  const [shipping, setShipping] = useState("standard")
+  const [shipping, setShipping] = useState("pickup")
   const [rush, setRush] = useState(false)
 
   const [name, setName] = useState("")
@@ -16,34 +24,36 @@ export function CustomDesign() {
   const [errors, setErrors] = useState<{ name?: string; email?: string }>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  function calculateAmount() {
-    let subtotal = 0
+  const selectedProduct = getProductById(productId)
+  const total = calculateOrderTotal(productId, quantity, shipping, rush)
+  const requiresQuote = total == null
 
-    if (type === "sticker-sheets") {
-      if (quantity === 1) subtotal = 800
-      else if (quantity === 2) subtotal = 1500
-      else if (quantity === 3) subtotal = 2000
-      else if (quantity >= 20) subtotal = quantity * 600
-      else if (quantity >= 10) subtotal = quantity * 700
-      else subtotal = quantity * 800
+  useEffect(() => {
+    function applyProductFromHash() {
+      const hash = window.location.hash
+      const queryStart = hash.indexOf("?")
+      if (queryStart === -1) return
+
+      const params = new URLSearchParams(hash.slice(queryStart + 1))
+      const requestedProduct = params.get("product")
+      if (requestedProduct && getProductById(requestedProduct)) {
+        setProductId(requestedProduct)
+      }
     }
 
-    if (type === "clear-stickers") {
-      if (quantity >= 50) subtotal = quantity * 300
-      else if (quantity >= 20) subtotal = quantity * 325
-      else subtotal = quantity * 350
+    applyProductFromHash()
+    window.addEventListener("hashchange", applyProductFromHash)
+    return () => window.removeEventListener("hashchange", applyProductFromHash)
+  }, [])
+
+  useEffect(() => {
+    const product = getProductById(productId)
+    if (product?.tierPricing === "package" && product.tiers?.[0]?.minQty) {
+      setQuantity(product.tiers[0].minQty)
+    } else {
+      setQuantity(1)
     }
-
-    if (shipping === "standard") subtotal += 150
-    if (shipping === "tracked") subtotal += 499
-    if (shipping === "bulk") subtotal += 799
-
-    if (rush) {
-      subtotal += quantity >= 10 ? 2500 : 1000
-    }
-
-    return subtotal
-  }
+  }, [productId])
 
   function validateForm() {
     const nextErrors: { name?: string; email?: string } = {}
@@ -67,18 +77,25 @@ export function CustomDesign() {
       return
     }
 
+    if (requiresQuote) {
+      window.location.href = `mailto:hello@deanedecals.com?subject=${encodeURIComponent(
+        `Quote request: ${selectedProduct?.name ?? "Custom order"}`
+      )}&body=${encodeURIComponent(
+        `Name: ${name.trim()}\nEmail: ${email.trim()}\nProduct: ${selectedProduct?.name ?? productId}\nQuantity: ${quantity}\nShipping: ${shipping}\nRush: ${rush ? "Yes" : "No"}\nArtwork ready: ${logoReady}\n\nNotes:\n${notes.trim()}`
+      )}`
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
-      const total = calculateAmount()
-
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          product: type,
+          product: productId,
           quantity,
           shipping,
           rush,
@@ -109,7 +126,7 @@ export function CustomDesign() {
         <div className="space-y-2 text-center">
           <h2 className="text-4xl font-black">Build Your Order</h2>
           <p className="text-zinc-400">
-            Custom stickers, team decals, tumblers, branding, and more.
+            Choose from our full product catalog — stickers, sports decals, tattoos, labels, and more.
           </p>
         </div>
 
@@ -146,26 +163,59 @@ export function CustomDesign() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-semibold">Sticker Type</label>
+          <label className="text-sm font-semibold">Product / Service</label>
           <select
             className="w-full rounded-lg border border-white/10 bg-black p-3"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
+            value={productId}
+            onChange={(e) => setProductId(e.target.value)}
           >
-            <option value="sticker-sheets">Custom Sticker Sheets</option>
-            <option value="clear-stickers">Clear Stickers</option>
+            {PRODUCT_CATEGORIES.map((category) => (
+              <optgroup key={category} label={category}>
+                {catalogProducts
+                  .filter((product) => product.category === category)
+                  .map((product) => (
+                    <option key={product.id} value={product.id}>
+                      {product.name} — {formatPriceLabel(product)}
+                    </option>
+                  ))}
+              </optgroup>
+            ))}
           </select>
+          {selectedProduct?.description ? (
+            <p className="text-sm leading-6 text-zinc-400">{selectedProduct.description}</p>
+          ) : null}
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-semibold">Quantity</label>
-          <input
-            type="number"
-            min="1"
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-            className="w-full rounded-lg border border-white/10 bg-black p-3"
-          />
+          <label className="text-sm font-semibold">
+            {selectedProduct?.tierPricing === "package" ? "Package Size" : "Quantity"}
+          </label>
+          {selectedProduct?.tierPricing === "package" && selectedProduct.tiers?.length ? (
+            <select
+              className="w-full rounded-lg border border-white/10 bg-black p-3"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+            >
+              {selectedProduct.tiers.map((tier) => (
+                <option key={tier.label} value={tier.minQty ?? 1}>
+                  {tier.label} — {tier.price == null ? "Quote" : formatPriceLabel({ ...selectedProduct, price: tier.price, tiers: undefined })}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type="number"
+              min="1"
+              value={quantity}
+              onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
+              className="w-full rounded-lg border border-white/10 bg-black p-3"
+            />
+          )}
+          {selectedProduct?.tiers?.length && selectedProduct.tierPricing !== "package" ? (
+            <p className="text-sm text-zinc-400">
+              Tier pricing applies automatically based on quantity.
+            </p>
+          ) : null}
         </div>
 
         <div className="space-y-2">
@@ -175,10 +225,11 @@ export function CustomDesign() {
             value={shipping}
             onChange={(e) => setShipping(e.target.value)}
           >
-            <option value="pickup">Local Pickup (Warner Robins) — Free</option>
-            <option value="standard">Standard Shipping — $1.50</option>
-            <option value="tracked">Tracked Shipping — $4.99</option>
-            <option value="bulk">Bulk / Team Shipping — $7.99</option>
+            {SHIPPING_OPTIONS.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.label}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -216,8 +267,13 @@ export function CustomDesign() {
         <div className="rounded-xl border border-red-900/40 bg-red-950/20 p-5">
           <div className="text-sm uppercase tracking-wide text-zinc-400">Estimated Total</div>
           <div className="mt-1 text-4xl font-black text-red-500">
-            ${(calculateAmount() / 100).toFixed(2)}
+            {requiresQuote ? "Quote required" : `$${(total / 100).toFixed(2)}`}
           </div>
+          {requiresQuote ? (
+            <p className="mt-2 text-sm text-zinc-400">
+              This item needs a custom quote. Submitting will open an email to hello@deanedecals.com with your order details.
+            </p>
+          ) : null}
         </div>
 
         <Button
@@ -225,7 +281,11 @@ export function CustomDesign() {
           disabled={isSubmitting}
           className="w-full bg-red-600 py-6 text-lg font-black text-white hover:bg-red-500 disabled:opacity-60"
         >
-          {isSubmitting ? "Redirecting to Checkout..." : "Continue to Checkout"}
+          {isSubmitting
+            ? "Redirecting to Checkout..."
+            : requiresQuote
+              ? "Request Quote by Email"
+              : "Continue to Checkout"}
         </Button>
       </div>
     </section>

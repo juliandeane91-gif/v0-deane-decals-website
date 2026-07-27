@@ -12,9 +12,9 @@ const FACEBOOK_HREF = "https://www.facebook.com/DeaneDecals"
 
 const footerLinks = {
   shop: [
-    { name: "Team Decals", href: "#shop" },
-    { name: "Helmet Stickers", href: "#shop" },
-    { name: "Tumbler Stickers", href: "#shop" },
+    { name: "Shop", href: "#shop" },
+    { name: "Pricing", href: "#pricing" },
+    { name: "Sports Decals", href: "#pricing" },
     { name: "Custom Orders", href: "#custom" },
   ],
   help: [
