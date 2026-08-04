@@ -265,7 +265,7 @@ export function CustomDesign() {
         </div>
 
         <div className="rounded-xl border border-red-900/40 bg-red-950/20 p-5">
-          <div className="text-sm uppercase tracking-wide text-zinc-400">Estimated Total</div>
+          <div className="text-sm uppercase tracking-wide text-zinc-400">Estimated Subtotal</div>
           <div className="mt-1 text-4xl font-black text-red-500">
             {requiresQuote ? "Quote required" : `$${(total / 100).toFixed(2)}`}
           </div>
@@ -273,7 +273,12 @@ export function CustomDesign() {
             <p className="mt-2 text-sm text-zinc-400">
               This item needs a custom quote. Submitting will open an email to hello@deanedecals.com with your order details.
             </p>
-          ) : null}
+          ) : (
+            <p className="mt-2 text-sm text-zinc-400">
+              Sales tax is calculated automatically at checkout based on your billing address
+              {shipping !== "pickup" ? " and shipping address" : ""}.
+            </p>
+          )}
         </div>
 
         <Button

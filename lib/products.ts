@@ -365,16 +365,41 @@ export function calculateOrderTotal(
   shippingId: string,
   rush: boolean
 ): number | null {
+  const breakdown = calculateOrderBreakdown(productId, quantity, shippingId, rush)
+  return breakdown?.total ?? null
+}
+
+export type OrderBreakdown = {
+  productSubtotal: number
+  shippingCents: number
+  rushCents: number
+  total: number
+  shippingId: string
+  shippingLabel: string
+}
+
+export function calculateOrderBreakdown(
+  productId: string,
+  quantity: number,
+  shippingId: string,
+  rush: boolean
+): OrderBreakdown | null {
   const product = getProductById(productId)
   if (!product) return null
 
-  const subtotal = calculateProductSubtotal(product, quantity)
-  if (subtotal == null) return null
+  const productSubtotal = calculateProductSubtotal(product, quantity)
+  if (productSubtotal == null) return null
 
-  let total = subtotal
-  const shipping = SHIPPING_OPTIONS.find((option) => option.id === shippingId)
-  if (shipping) total += shipping.cents
-  if (rush) total += quantity >= 10 ? 2500 : 1000
+  const shipping = SHIPPING_OPTIONS.find((option) => option.id === shippingId) ?? SHIPPING_OPTIONS[0]
+  const shippingCents = shipping.cents
+  const rushCents = rush ? (quantity >= 10 ? 2500 : 1000) : 0
 
-  return total
+  return {
+    productSubtotal,
+    shippingCents,
+    rushCents,
+    total: productSubtotal + shippingCents + rushCents,
+    shippingId: shipping.id,
+    shippingLabel: shipping.label,
+  }
 }

@@ -42,6 +42,10 @@ export async function POST(req: Request) {
     const orderTotal = session.amount_total
       ? `$${(session.amount_total / 100).toFixed(2)}`
       : "Unknown"
+    const taxTotal =
+      session.total_details?.amount_tax != null
+        ? `$${(session.total_details.amount_tax / 100).toFixed(2)}`
+        : null
 
     const customerName = meta.customerName || "Not provided"
     const customerEmail =
@@ -57,9 +61,10 @@ export async function POST(req: Request) {
         html: `
           <h2>New Deane Decals Order</h2>
           <p><strong>Total:</strong> ${escapeHtml(orderTotal)}</p>
+          ${taxTotal ? `<p><strong>Sales tax:</strong> ${escapeHtml(taxTotal)}</p>` : ""}
           <p><strong>Customer Name:</strong> ${escapeHtml(customerName)}</p>
           <p><strong>Customer Email:</strong> ${escapeHtml(customerEmail)}</p>
-          <p><strong>Product:</strong> ${escapeHtml(meta.product || "Not provided")}</p>
+          <p><strong>Product:</strong> ${escapeHtml(meta.productName || meta.product || "Not provided")}</p>
           <p><strong>Quantity:</strong> ${escapeHtml(meta.quantity || "Not provided")}</p>
           <p><strong>Shipping:</strong> ${escapeHtml(meta.shipping || "Not provided")}</p>
           <p><strong>Rush:</strong> ${escapeHtml(meta.rush || "false")}</p>
