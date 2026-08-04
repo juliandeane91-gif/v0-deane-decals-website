@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { ArrowRight, CheckCircle2, Layers, ShieldCheck, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -54,10 +53,10 @@ export function MahjongSplash() {
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <Button asChild size="lg" className="rounded-full bg-red-700 px-8 py-6 font-bold hover:bg-red-600">
-                <Link href={getOrderLink("mahjong-complete")}>
+                <a href={getOrderLink("mahjong-complete")}>
                   Order Complete Set
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                </a>
               </Button>
               <Button
                 asChild
@@ -148,7 +147,7 @@ export function MahjongSplash() {
                     <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/10 pt-6">
                       <p className="text-2xl font-black text-red-400">{formatPriceLabel(product)}</p>
                       <Button asChild className="rounded-full bg-red-700 font-bold hover:bg-red-600">
-                        <Link href={getOrderLink(product.id)}>Order now</Link>
+                        <a href={getOrderLink(product.id)}>Order now</a>
                       </Button>
                     </div>
                   </CardContent>
@@ -171,10 +170,10 @@ export function MahjongSplash() {
             </p>
           </div>
           <Button asChild size="lg" className="rounded-full bg-red-700 px-8 font-bold hover:bg-red-600">
-            <Link href={getOrderLink("mahjong-complete")}>
+            <a href={getOrderLink("mahjong-complete")}>
               Start your order
               <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
+            </a>
           </Button>
         </div>
       </section>

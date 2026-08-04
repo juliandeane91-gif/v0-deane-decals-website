@@ -355,11 +355,18 @@ export function getProductById(id: string): CatalogProduct | undefined {
 }
 
 export function getOrderLink(productId: string): string {
-  return `/?product=${encodeURIComponent(productId)}#custom`
+  return `/?product=${encodeURIComponent(productId)}`
 }
 
-export function getProductIdFromOrderUrl(url: Pick<URL, "searchParams" | "hash">): string | null {
-  const fromSearch = url.searchParams.get("product")
+export function getProductIdFromOrderUrl(
+  url: Pick<URL, "searchParams" | "hash" | "search">
+): string | null {
+  const searchParams =
+    url.search && url.search.length > 1
+      ? new URLSearchParams(url.search)
+      : url.searchParams
+
+  const fromSearch = searchParams.get("product")
   if (fromSearch && getProductById(fromSearch)) {
     return fromSearch
   }
