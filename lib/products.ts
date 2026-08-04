@@ -348,6 +348,8 @@ export function getProductsByCategory(category: ProductCategory): CatalogProduct
   return catalogProducts.filter((product) => product.category === category)
 }
 
+export const mahjongProducts = getProductsByCategory("Mahjong")
+
 export function getProductById(id: string): CatalogProduct | undefined {
   return catalogProducts.find((product) => product.id === id)
 }

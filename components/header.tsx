@@ -7,12 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 const navigation = [
-  { name: "Shop", href: "#shop" },
-  { name: "Pricing", href: "#pricing" },
-  { name: "Custom Orders", href: "#custom" },
-  { name: "How It Works", href: "#process" },
-  { name: "FAQ", href: "#faq" },
-  { name: "About", href: "#about" },
+  { name: "Mahjong", href: "/mahjong" },
+  { name: "Shop", href: "/#shop" },
+  { name: "Pricing", href: "/#pricing" },
+  { name: "Custom Orders", href: "/#custom" },
+  { name: "How It Works", href: "/#process" },
+  { name: "FAQ", href: "/#faq" },
+  { name: "About", href: "/#about" },
 ]
 
 export function Header() {
@@ -45,7 +46,7 @@ export function Header() {
         <div className="flex items-center gap-3">
           
           {/* CHECKOUT BUTTON */}
-          <Link href="#custom">
+          <Link href="/#custom">
             <Button className="hidden rounded-full bg-red-700 px-5 font-bold text-white hover:bg-red-600 sm:flex">
               Start Custom Order
             </Button>
@@ -71,7 +72,7 @@ export function Header() {
                   </Link>
                 ))}
 
-                <Link href="#custom" onClick={() => setIsOpen(false)}>
+                <Link href="/#custom" onClick={() => setIsOpen(false)}>
                   <Button className="mt-4 w-full bg-red-700 font-bold">
                     Start Custom Order
                   </Button>
