@@ -7,6 +7,7 @@ import {
   catalogProducts,
   formatPriceLabel,
   getProductById,
+  getProductIdFromOrderUrl,
   PRODUCT_CATEGORIES,
   SHIPPING_OPTIONS,
 } from "@/lib/products"
@@ -29,21 +30,16 @@ export function CustomDesign() {
   const requiresQuote = total == null
 
   useEffect(() => {
-    function applyProductFromHash() {
-      const hash = window.location.hash
-      const queryStart = hash.indexOf("?")
-      if (queryStart === -1) return
-
-      const params = new URLSearchParams(hash.slice(queryStart + 1))
-      const requestedProduct = params.get("product")
-      if (requestedProduct && getProductById(requestedProduct)) {
+    function applyProductFromUrl() {
+      const requestedProduct = getProductIdFromOrderUrl(window.location)
+      if (requestedProduct) {
         setProductId(requestedProduct)
       }
     }
 
-    applyProductFromHash()
-    window.addEventListener("hashchange", applyProductFromHash)
-    return () => window.removeEventListener("hashchange", applyProductFromHash)
+    applyProductFromUrl()
+    window.addEventListener("hashchange", applyProductFromUrl)
+    return () => window.removeEventListener("hashchange", applyProductFromUrl)
   }, [])
 
   useEffect(() => {

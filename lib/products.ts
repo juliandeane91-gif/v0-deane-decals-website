@@ -354,6 +354,28 @@ export function getProductById(id: string): CatalogProduct | undefined {
   return catalogProducts.find((product) => product.id === id)
 }
 
+export function getOrderLink(productId: string): string {
+  return `/?product=${encodeURIComponent(productId)}#custom`
+}
+
+export function getProductIdFromOrderUrl(url: Pick<URL, "searchParams" | "hash">): string | null {
+  const fromSearch = url.searchParams.get("product")
+  if (fromSearch && getProductById(fromSearch)) {
+    return fromSearch
+  }
+
+  const hash = url.hash
+  const queryStart = hash.indexOf("?")
+  if (queryStart === -1) return null
+
+  const fromHash = new URLSearchParams(hash.slice(queryStart + 1)).get("product")
+  if (fromHash && getProductById(fromHash)) {
+    return fromHash
+  }
+
+  return null
+}
+
 export const SHIPPING_OPTIONS = [
   { id: "pickup", label: "Local Pickup (Warner Robins) — Free", cents: 0 },
   { id: "standard", label: "Standard Shipping — $1.50", cents: 150 },
