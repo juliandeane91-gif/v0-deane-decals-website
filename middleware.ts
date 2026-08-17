@@ -3,8 +3,9 @@ import type { NextRequest } from "next/server"
 
 export function middleware(request: NextRequest) {
   const host = request.headers.get("host")?.split(":")[0]
+  const pathname = request.nextUrl.pathname
 
-  if (host === "deanedecals.com") {
+  if (host === "deanedecals.com" && !pathname.startsWith("/api/")) {
     const url = request.nextUrl.clone()
     url.protocol = "https:"
     url.host = "www.deanedecals.com"
