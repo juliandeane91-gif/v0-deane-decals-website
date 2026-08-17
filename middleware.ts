@@ -12,7 +12,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308)
   }
 
-  if (request.nextUrl.pathname === "/") {
+  if (pathname === "/" && request.nextUrl.searchParams.has("product")) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/shop"
+    return NextResponse.redirect(url, 308)
+  }
+
+  if (pathname === "/") {
     const response = NextResponse.next()
     response.headers.set("Cache-Control", "no-store, must-revalidate")
     return response

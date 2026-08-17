@@ -1,8 +1,5 @@
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
-import { Products } from "@/components/products"
-import { Pricing } from "@/components/pricing"
-import { CustomDesign } from "@/components/custom-design"
 import { Testimonials } from "@/components/testimonials"
 import { About } from "@/components/about"
 import { FAQ } from "@/components/faq"
@@ -108,9 +105,6 @@ export default function Home() {
       <HowItWorks />
       <DesignAssistant />
       <Testimonials />
-      <Products />
-      <Pricing />
-      <CustomDesign />
       <About />
       <FAQ />
       <Footer />

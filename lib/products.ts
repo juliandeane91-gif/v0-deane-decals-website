@@ -355,7 +355,7 @@ export function getProductById(id: string): CatalogProduct | undefined {
 }
 
 export function getOrderLink(productId: string): string {
-  return `/?product=${encodeURIComponent(productId)}`
+  return `/shop?product=${encodeURIComponent(productId)}`
 }
 
 export function getProductIdFromOrderUrl(
