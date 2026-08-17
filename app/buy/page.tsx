@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
-import { Header } from "@/components/header"
+import { ArrowRight } from "lucide-react"
+import { SiteHeader } from "@/components/site-header"
 import { Footer } from "@/components/footer"
 import { Products } from "@/components/products"
 import { Pricing } from "@/components/pricing"
-import { CustomDesign } from "@/components/custom-design"
 
 export const metadata: Metadata = {
   title: "Shop & Order | Deane Decals",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default function BuyPage() {
   return (
     <main className="min-h-screen bg-[#05070b] text-white">
-      <Header />
+      <SiteHeader />
       <section className="border-b border-white/10 bg-[#080b12] px-6 pb-10 pt-28 text-center text-white">
         <div className="mx-auto max-w-3xl">
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-red-500">Shop</p>
@@ -36,7 +36,21 @@ export default function BuyPage() {
       </section>
       <Products />
       <Pricing />
-      <CustomDesign />
+      <section className="border-t border-white/10 bg-[#080b12] px-6 py-16 text-center">
+        <div className="mx-auto max-w-2xl">
+          <h2 className="text-3xl font-black">Ready to place your order?</h2>
+          <p className="mt-4 text-zinc-300">
+            Open the order form to choose your product, quantity, shipping, and checkout securely.
+          </p>
+          <a
+            href="/checkout"
+            className="mt-8 inline-flex items-center rounded-full bg-red-700 px-8 py-4 text-base font-bold text-white hover:bg-red-600"
+          >
+            Build Your Order
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </a>
+        </div>
+      </section>
       <Footer />
     </main>
   )

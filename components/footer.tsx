@@ -14,12 +14,12 @@ const footerLinks = {
     { name: "Mahjong", href: "/mahjong" },
     { name: "Shop", href: "/buy" },
     { name: "Pricing", href: "/buy#pricing" },
-    { name: "Custom Orders", href: "/buy#custom" },
+    { name: "Custom Orders", href: "/checkout" },
   ],
   help: [
     { name: "FAQ", href: "/#faq" },
     { name: "Shipping Info", href: "/#faq" },
-    { name: "Start an Order", href: "/buy#custom" },
+    { name: "Start an Order", href: "/checkout" },
     { name: "Contact", href: "/#contact" },
   ],
 }

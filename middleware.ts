@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
 
   if (pathname === "/" && request.nextUrl.searchParams.has("product")) {
     const url = request.nextUrl.clone()
-    url.pathname = "/buy"
+    url.pathname = "/checkout"
     return NextResponse.redirect(url, 308)
   }
 
