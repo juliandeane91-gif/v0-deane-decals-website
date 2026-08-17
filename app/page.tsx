@@ -1,29 +1,10 @@
-import dynamic from "next/dynamic"
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { Testimonials } from "@/components/testimonials"
 import { About } from "@/components/about"
 import { FAQ } from "@/components/faq"
 import { Footer } from "@/components/footer"
-
-const DesignAssistant = dynamic(
-  () => import("@/components/design-assistant").then((mod) => mod.DesignAssistant)
-)
-
-const Products = dynamic(
-  () => import("@/components/products").then((mod) => mod.Products),
-  { loading: () => <section className="bg-zinc-950 py-24 text-center text-zinc-400">Loading shop…</section> }
-)
-
-const Pricing = dynamic(
-  () => import("@/components/pricing").then((mod) => mod.Pricing),
-  { loading: () => <section className="bg-[#05070b] py-24 text-center text-zinc-400">Loading pricing…</section> }
-)
-
-const CustomDesign = dynamic(
-  () => import("@/components/custom-design").then((mod) => mod.CustomDesign),
-  { loading: () => <section className="bg-[#05070b] py-24 text-center text-zinc-400">Loading order form…</section> }
-)
+import { HomeDeferred } from "@/components/home-deferred"
 
 function TrustStrip() {
   const trustItems = [
@@ -122,11 +103,8 @@ export default function Home() {
       <TrustStrip />
       <SectionIntro />
       <HowItWorks />
-      <DesignAssistant />
       <Testimonials />
-      <Products />
-      <Pricing />
-      <CustomDesign />
+      <HomeDeferred />
       <About />
       <FAQ />
       <Footer />
