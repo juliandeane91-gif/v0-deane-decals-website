@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { OrderSections } from "@/components/order-sections"
+import { Products } from "@/components/products"
+import { Pricing } from "@/components/pricing"
+import { CustomDesign } from "@/components/custom-design"
 
 export const metadata: Metadata = {
   title: "Shop & Order | Deane Decals",
@@ -32,7 +34,9 @@ export default function OrderPage() {
           </p>
         </div>
       </section>
-      <OrderSections />
+      <Products />
+      <Pricing />
+      <CustomDesign />
       <Footer />
     </main>
   )
