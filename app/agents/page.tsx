@@ -41,8 +41,9 @@ const promptsByAgent: Record<AgentId, string[]> = {
     "Draft a pickup-ready email for a customer in Warner Robins.",
   ],
   design: [
+    "Show me a mockup of a mahjong card cover with red and black florals",
     "What file types do we need for a team logo sticker?",
-    "Review production notes for a 3-inch vinyl helmet decal.",
+    "Review production notes for a 3-inch vinyl helmet decal",
   ],
 }
 

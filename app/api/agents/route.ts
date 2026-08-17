@@ -46,6 +46,9 @@ export async function POST(req: Request) {
       mode,
       agent: agent ?? (mode === "internal" ? "business-manager" : undefined),
       apiKey,
+      logoBase64: typeof body.logoBase64 === "string" ? body.logoBase64 : undefined,
+      productType: body.productType,
+      generateImage: body.generateImage === true,
     })
 
     return NextResponse.json(result)

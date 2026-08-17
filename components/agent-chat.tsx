@@ -2,14 +2,18 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Loader2, Send } from "lucide-react"
+import { ChatMessageBubble } from "@/components/chat-message-bubble"
+import { DesignChatTools, readLogoAsBase64 } from "@/components/design-chat-tools"
 import { Button } from "@/components/ui/button"
-import { AGENT_DIRECTORY, type AgentId, type AgentMode } from "@/lib/agents/types"
+import type { MockupProduct } from "@/lib/agents/design-image"
+import type { AgentId, AgentMode } from "@/lib/agents/types"
 
 type ChatMessage = {
   id: string
   role: "user" | "assistant"
   text: string
   agent?: AgentId
+  imageUrl?: string
 }
 
 type AgentChatProps = {
@@ -21,6 +25,7 @@ type AgentChatProps = {
   suggestedPrompts: string[]
   placeholder: string
   apiPath?: string
+  enableDesignTools?: boolean
 }
 
 export function AgentChat({
@@ -32,19 +37,36 @@ export function AgentChat({
   suggestedPrompts,
   placeholder,
   apiPath = "/api/agents",
+  enableDesignTools = false,
 }: AgentChatProps) {
   const [input, setInput] = useState("")
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [status, setStatus] = useState<"idle" | "loading">("idle")
+  const [productType, setProductType] = useState<MockupProduct>("sticker")
+  const [logoPreview, setLogoPreview] = useState<string | null>(null)
+  const [logoBase64, setLogoBase64] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const isLoading = status === "loading"
+  const showDesignTools = enableDesignTools || selectedAgent === "design"
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
-  async function sendMessage(text: string) {
+  async function handleLogoSelect(file: File | null) {
+    if (!file) {
+      setLogoPreview(null)
+      setLogoBase64(null)
+      return
+    }
+
+    const dataUrl = await readLogoAsBase64(file)
+    setLogoPreview(dataUrl)
+    setLogoBase64(dataUrl)
+  }
+
+  async function sendMessage(text: string, options?: { generateImage?: boolean }) {
     if (isLoading || !text.trim()) return
 
     const userMessage: ChatMessage = {
@@ -76,6 +98,9 @@ export function AgentChat({
             role: message.role,
             content: message.text,
           })),
+          logoBase64: logoBase64 ?? undefined,
+          productType,
+          generateImage: options?.generateImage ?? false,
         }),
       })
 
@@ -92,6 +117,7 @@ export function AgentChat({
           role: "assistant",
           text: data.text || "No response.",
           agent: data.agent,
+          imageUrl: data.imageUrl,
         },
       ])
     } catch (err: unknown) {
@@ -109,11 +135,74 @@ export function AgentChat({
     }
   }
 
+  async function generateMockup() {
+    if (isLoading) return
+
+    const prompt =
+      input.trim() ||
+      (logoBase64
+        ? "Create a product mockup with my uploaded logo"
+        : "Create a bold Deane Decals sticker concept mockup")
+
+    setStatus("loading")
+
+    try {
+      const res = await fetch("/api/design-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt,
+          logoBase64: logoBase64 ?? undefined,
+          productType,
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || "Mockup generation failed")
+      }
+
+      setMessages((current) => [
+        ...current,
+        {
+          id: crypto.randomUUID(),
+          role: "user",
+          text: prompt,
+        },
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          text: data.text,
+          agent: "design",
+          imageUrl: data.imageUrl,
+        },
+      ])
+      setInput("")
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Mockup generation failed"
+      setMessages((current) => [
+        ...current,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          text: message,
+          agent: "design",
+        },
+      ])
+    } finally {
+      setStatus("idle")
+    }
+  }
+
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
     if (!input.trim() || isLoading) return
-    void sendMessage(input)
+    void sendMessage(input, { generateImage: showDesignTools && wantsMockupLanguage(input) })
     setInput("")
+  }
+
+  function wantsMockupLanguage(text: string) {
+    return /mockup|show me|visuali[sz]e|preview|what would.*look/i.test(text)
   }
 
   return (
@@ -128,7 +217,7 @@ export function AgentChat({
                 <button
                   key={prompt}
                   type="button"
-                  onClick={() => void sendMessage(prompt)}
+                  onClick={() => void sendMessage(prompt, { generateImage: wantsMockupLanguage(prompt) })}
                   className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-zinc-200 transition-all hover:border-red-700/60 hover:bg-red-700/10"
                 >
                   {prompt}
@@ -139,30 +228,22 @@ export function AgentChat({
         ) : (
           <div className="space-y-4">
             {messages.map((message) => (
-              <div
+              <ChatMessageBubble
                 key={message.id}
-                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-                    message.role === "user" ? "bg-red-700 text-white" : "bg-zinc-900 text-zinc-100"
-                  }`}
-                >
-                  {message.role === "assistant" && message.agent ? (
-                    <p className="mb-1 text-[10px] font-black uppercase tracking-[0.2em] text-red-400">
-                      {AGENT_DIRECTORY[message.agent]?.name ?? message.agent}
-                    </p>
-                  ) : null}
-                  <p className="whitespace-pre-wrap text-sm">{message.text}</p>
-                </div>
-              </div>
+                role={message.role}
+                text={message.text}
+                agent={message.agent}
+                imageUrl={message.imageUrl}
+              />
             ))}
 
             {isLoading ? (
               <div className="flex justify-start">
                 <div className="flex items-center gap-2 rounded-2xl bg-zinc-900 px-4 py-2">
                   <Loader2 className="h-4 w-4 animate-spin text-red-500" />
-                  <span className="text-sm text-zinc-400">Thinking...</span>
+                  <span className="text-sm text-zinc-400">
+                    {showDesignTools ? "Designing..." : "Thinking..."}
+                  </span>
                 </div>
               </div>
             ) : null}
@@ -171,6 +252,17 @@ export function AgentChat({
           </div>
         )}
       </div>
+
+      {showDesignTools ? (
+        <DesignChatTools
+          productType={productType}
+          onProductTypeChange={setProductType}
+          logoPreview={logoPreview}
+          onLogoSelect={(file) => void handleLogoSelect(file)}
+          onGenerateMockup={() => void generateMockup()}
+          isLoading={isLoading}
+        />
+      ) : null}
 
       <form onSubmit={handleSubmit} className="border-t border-white/10 p-3">
         <div className="flex gap-2">

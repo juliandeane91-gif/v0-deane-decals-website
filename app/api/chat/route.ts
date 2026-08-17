@@ -30,11 +30,16 @@ export async function POST(req: Request) {
       messages,
       mode: "customer",
       apiKey,
+      logoBase64: typeof body.logoBase64 === "string" ? body.logoBase64 : undefined,
+      productType: body.productType,
+      generateImage: body.generateImage === true,
     })
 
     return NextResponse.json({
       text: result.text,
       agent: result.agent,
+      imageUrl: result.imageUrl,
+      imageMode: result.imageMode,
     })
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "AI assistant failed"

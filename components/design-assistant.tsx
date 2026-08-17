@@ -2,7 +2,10 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Loader2, MessageCircle, Send, Sparkles, X } from "lucide-react"
-import { AGENT_DIRECTORY, type AgentId } from "@/lib/agents/types"
+import { ChatMessageBubble } from "@/components/chat-message-bubble"
+import { DesignChatTools, readLogoAsBase64 } from "@/components/design-chat-tools"
+import type { AgentId } from "@/lib/agents/types"
+import type { MockupProduct } from "@/lib/agents/design-image"
 import { Button } from "@/components/ui/button"
 
 type ChatMessage = {
@@ -10,6 +13,7 @@ type ChatMessage = {
   role: "user" | "assistant"
   text: string
   agent?: AgentId
+  imageUrl?: string
 }
 
 export function DesignAssistant() {
@@ -17,6 +21,9 @@ export function DesignAssistant() {
   const [input, setInput] = useState("")
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [status, setStatus] = useState<"idle" | "loading">("idle")
+  const [productType, setProductType] = useState<MockupProduct>("mahjong")
+  const [logoPreview, setLogoPreview] = useState<string | null>(null)
+  const [logoBase64, setLogoBase64] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const isLoading = status === "loading"
@@ -25,7 +32,19 @@ export function DesignAssistant() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
-  async function sendMessage(text: string) {
+  async function handleLogoSelect(file: File | null) {
+    if (!file) {
+      setLogoPreview(null)
+      setLogoBase64(null)
+      return
+    }
+
+    const dataUrl = await readLogoAsBase64(file)
+    setLogoPreview(dataUrl)
+    setLogoBase64(dataUrl)
+  }
+
+  async function sendMessage(text: string, options?: { generateImage?: boolean }) {
     if (isLoading || !text.trim()) return
 
     const userMessage: ChatMessage = {
@@ -47,6 +66,9 @@ export function DesignAssistant() {
             role: message.role,
             content: message.text,
           })),
+          logoBase64: logoBase64 ?? undefined,
+          productType,
+          generateImage: options?.generateImage ?? false,
         }),
       })
 
@@ -59,6 +81,7 @@ export function DesignAssistant() {
           role: "assistant",
           text: data.text || data.error || "Sorry, I had trouble responding.",
           agent: data.agent,
+          imageUrl: data.imageUrl,
         },
       ])
     } catch {
@@ -75,16 +98,70 @@ export function DesignAssistant() {
     }
   }
 
+  async function generateMockup() {
+    if (isLoading) return
+
+    const prompt =
+      input.trim() ||
+      (logoBase64
+        ? "Create a product mockup with my uploaded logo"
+        : "Create a bold Deane Decals mahjong card cover concept")
+
+    setStatus("loading")
+
+    try {
+      const res = await fetch("/api/design-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt,
+          logoBase64: logoBase64 ?? undefined,
+          productType,
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || "Mockup generation failed")
+      }
+
+      setMessages((current) => [
+        ...current,
+        { id: crypto.randomUUID(), role: "user", text: prompt },
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          text: data.text,
+          agent: "design",
+          imageUrl: data.imageUrl,
+        },
+      ])
+      setInput("")
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Mockup generation failed"
+      setMessages((current) => [
+        ...current,
+        { id: crypto.randomUUID(), role: "assistant", text: message, agent: "design" },
+      ])
+    } finally {
+      setStatus("idle")
+    }
+  }
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     if (!input.trim() || isLoading) return
-    void sendMessage(input)
+    void sendMessage(input, { generateImage: wantsMockupLanguage(input) || Boolean(logoBase64) })
     setInput("")
   }
 
+  function wantsMockupLanguage(text: string) {
+    return /mockup|show me|visuali[sz]e|preview|what would.*look/i.test(text)
+  }
+
   const suggestedPrompts = [
-    "I want to order Mahjong card covers.",
-    "Help me size a tumbler sticker.",
+    "Show me a mockup of a red and black mahjong card cover",
+    "Help me size a tumbler sticker",
     "What file do I need for my logo?",
   ]
 
@@ -99,7 +176,7 @@ export function DesignAssistant() {
       </button>
 
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 flex h-[500px] w-[calc(100vw-2rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-black text-white shadow-2xl">
+        <div className="fixed bottom-6 right-6 z-50 flex h-[580px] w-[calc(100vw-2rem)] max-w-[400px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-black text-white shadow-2xl">
           <div className="flex items-center justify-between border-b border-white/10 bg-zinc-950 px-4 py-3">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-700">
@@ -107,7 +184,7 @@ export function DesignAssistant() {
               </div>
               <div>
                 <h3 className="font-bold">Ask Deane Decals</h3>
-                <p className="text-xs text-zinc-400">Sales & design help, powered by AI</p>
+                <p className="text-xs text-zinc-400">Sales, design help & mockups</p>
               </div>
             </div>
             <button
@@ -126,14 +203,16 @@ export function DesignAssistant() {
                 </div>
                 <h4 className="mb-2 text-lg font-black text-white">What are we making?</h4>
                 <p className="mb-4 text-sm leading-6 text-zinc-400">
-                  Get product recommendations, pricing help, or design guidance — routed to the right specialist automatically.
+                  Get pricing help, design guidance, or generate a concept mockup — upload your logo for product previews.
                 </p>
                 <div className="flex flex-col gap-2">
                   {suggestedPrompts.map((prompt) => (
                     <button
                       key={prompt}
                       type="button"
-                      onClick={() => void sendMessage(prompt)}
+                      onClick={() =>
+                        void sendMessage(prompt, { generateImage: wantsMockupLanguage(prompt) })
+                      }
                       className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-zinc-200 transition-all hover:border-red-700/60 hover:bg-red-700/10"
                     >
                       {prompt}
@@ -144,30 +223,20 @@ export function DesignAssistant() {
             ) : (
               <div className="space-y-4">
                 {messages.map((message) => (
-                  <div
+                  <ChatMessageBubble
                     key={message.id}
-                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                  >
-                    <div
-                      className={`max-w-[85%] rounded-2xl px-4 py-2 ${
-                        message.role === "user" ? "bg-red-700 text-white" : "bg-zinc-900 text-zinc-100"
-                      }`}
-                    >
-                      {message.role === "assistant" && message.agent ? (
-                        <p className="mb-1 text-[10px] font-black uppercase tracking-[0.2em] text-red-400">
-                          {AGENT_DIRECTORY[message.agent]?.name ?? message.agent}
-                        </p>
-                      ) : null}
-                      <p className="whitespace-pre-wrap text-sm">{message.text}</p>
-                    </div>
-                  </div>
+                    role={message.role}
+                    text={message.text}
+                    agent={message.agent}
+                    imageUrl={message.imageUrl}
+                  />
                 ))}
 
                 {isLoading && (
                   <div className="flex justify-start">
                     <div className="flex items-center gap-2 rounded-2xl bg-zinc-900 px-4 py-2">
                       <Loader2 className="h-4 w-4 animate-spin text-red-500" />
-                      <span className="text-sm text-zinc-400">Thinking...</span>
+                      <span className="text-sm text-zinc-400">Designing...</span>
                     </div>
                   </div>
                 )}
@@ -176,6 +245,16 @@ export function DesignAssistant() {
               </div>
             )}
           </div>
+
+          <DesignChatTools
+            compact
+            productType={productType}
+            onProductTypeChange={setProductType}
+            logoPreview={logoPreview}
+            onLogoSelect={(file) => void handleLogoSelect(file)}
+            onGenerateMockup={() => void generateMockup()}
+            isLoading={isLoading}
+          />
 
           <form onSubmit={handleSubmit} className="border-t border-white/10 p-3">
             <div className="flex gap-2">
