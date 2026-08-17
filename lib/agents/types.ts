@@ -52,7 +52,7 @@ export const AGENT_DIRECTORY: Record<AgentId, AgentMeta> = {
   design: {
     id: "design",
     name: "Design Agent",
-    description: "Creates concepts, checks artwork, prepares production info.",
+    description: "Creates concepts, mockup images, checks artwork, prepares production info.",
     audience: "both",
   },
 }
@@ -61,4 +61,6 @@ export type AgentResponse = {
   text: string
   agent: AgentId
   routedFrom?: AgentId
+  imageUrl?: string
+  imageMode?: "concept" | "mockup"
 }

@@ -25,7 +25,7 @@ function keywordRoute(message: string, mode: AgentMode): AgentId {
     }
   }
 
-  if (/logo|artwork|file|dpi|vector|design concept|production|proof|png|svg/.test(text)) {
+  if (/logo|artwork|file|dpi|vector|design concept|production|proof|png|svg|mockup|mock up|visuali[sz]e|show me.*look/.test(text)) {
     return "design"
   }
 
