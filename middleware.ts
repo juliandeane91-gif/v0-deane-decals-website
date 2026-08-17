@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308)
   }
 
-  if (pathname === "/") {
+  if (pathname === "/" || pathname === "/shop") {
     const response = NextResponse.next()
     response.headers.set("Cache-Control", "no-store, must-revalidate")
     return response
