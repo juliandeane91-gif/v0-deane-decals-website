@@ -1,7 +1,6 @@
 "use client"
 
-import { Suspense, useEffect, useState } from "react"
-import { useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   calculateOrderTotal,
@@ -13,8 +12,7 @@ import {
   SHIPPING_OPTIONS,
 } from "@/lib/products"
 
-function CustomDesignForm() {
-  const searchParams = useSearchParams()
+export function CustomDesign() {
   const [productId, setProductId] = useState("sticker-sheet")
   const [quantity, setQuantity] = useState(1)
   const [shipping, setShipping] = useState("pickup")
@@ -32,29 +30,19 @@ function CustomDesignForm() {
   const requiresQuote = total == null
 
   useEffect(() => {
-    const fromQuery = searchParams.get("product")
-    const requestedProduct =
-      (fromQuery && getProductById(fromQuery) ? fromQuery : null) ??
-      getProductIdFromOrderUrl(window.location)
-
-    if (requestedProduct) {
-      setProductId(requestedProduct)
-      window.requestAnimationFrame(() => {
-        document.getElementById("custom")?.scrollIntoView({ behavior: "smooth" })
-      })
-    }
-  }, [searchParams])
-
-  useEffect(() => {
-    function applyProductFromHash() {
+    function applyProductFromUrl() {
       const requestedProduct = getProductIdFromOrderUrl(window.location)
       if (requestedProduct) {
         setProductId(requestedProduct)
+        window.requestAnimationFrame(() => {
+          document.getElementById("custom")?.scrollIntoView({ behavior: "smooth" })
+        })
       }
     }
 
-    window.addEventListener("hashchange", applyProductFromHash)
-    return () => window.removeEventListener("hashchange", applyProductFromHash)
+    applyProductFromUrl()
+    window.addEventListener("hashchange", applyProductFromUrl)
+    return () => window.removeEventListener("hashchange", applyProductFromUrl)
   }, [])
 
   useEffect(() => {
@@ -305,24 +293,5 @@ function CustomDesignForm() {
         </Button>
       </div>
     </section>
-  )
-}
-
-function CustomDesignFallback() {
-  return (
-    <section className="bg-[#05070b] px-6 py-16 text-white" id="custom">
-      <div className="mx-auto max-w-2xl space-y-6 text-center">
-        <h2 className="text-4xl font-black">Build Your Order</h2>
-        <p className="text-zinc-400">Loading order form…</p>
-      </div>
-    </section>
-  )
-}
-
-export function CustomDesign() {
-  return (
-    <Suspense fallback={<CustomDesignFallback />}>
-      <CustomDesignForm />
-    </Suspense>
   )
 }
