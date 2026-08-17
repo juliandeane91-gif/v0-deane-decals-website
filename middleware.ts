@@ -12,13 +12,19 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308)
   }
 
-  if (pathname === "/" && request.nextUrl.searchParams.has("product")) {
+  if (pathname === "/shop" || pathname === "/shop/") {
     const url = request.nextUrl.clone()
-    url.pathname = "/shop"
+    url.pathname = "/order"
     return NextResponse.redirect(url, 308)
   }
 
-  if (pathname === "/" || pathname === "/shop") {
+  if (pathname === "/" && request.nextUrl.searchParams.has("product")) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/order"
+    return NextResponse.redirect(url, 308)
+  }
+
+  if (pathname === "/" || pathname === "/order" || pathname === "/agents") {
     const response = NextResponse.next()
     response.headers.set("Cache-Control", "no-store, must-revalidate")
     return response

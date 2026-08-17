@@ -12,14 +12,14 @@ const FACEBOOK_HREF = "https://www.facebook.com/DeaneDecals"
 const footerLinks = {
   shop: [
     { name: "Mahjong", href: "/mahjong" },
-    { name: "Shop", href: "/shop" },
-    { name: "Pricing", href: "/shop#pricing" },
-    { name: "Custom Orders", href: "/shop#custom" },
+    { name: "Shop", href: "/order" },
+    { name: "Pricing", href: "/order#pricing" },
+    { name: "Custom Orders", href: "/order#custom" },
   ],
   help: [
     { name: "FAQ", href: "/#faq" },
     { name: "Shipping Info", href: "/#faq" },
-    { name: "Start an Order", href: "/shop#custom" },
+    { name: "Start an Order", href: "/order#custom" },
     { name: "Contact", href: "/#contact" },
   ],
 }

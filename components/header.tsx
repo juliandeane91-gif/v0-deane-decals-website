@@ -7,9 +7,9 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 const navigation = [
   { name: "Mahjong", href: "/mahjong" },
-  { name: "Shop", href: "/shop" },
-  { name: "Pricing", href: "/shop#pricing" },
-  { name: "Custom Orders", href: "/shop#custom" },
+  { name: "Shop", href: "/order" },
+  { name: "Pricing", href: "/order#pricing" },
+  { name: "Custom Orders", href: "/order#custom" },
   { name: "How It Works", href: "/#process" },
   { name: "FAQ", href: "/#faq" },
   { name: "About", href: "/#about" },
@@ -39,7 +39,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-3">
-          <a href="/shop#custom">
+          <a href="/order#custom">
             <Button className="hidden rounded-full bg-red-700 px-5 font-bold text-white hover:bg-red-600 sm:flex">
               Start Custom Order
             </Button>
@@ -64,7 +64,7 @@ export function Header() {
                   </a>
                 ))}
 
-                <a href="/shop#custom" onClick={() => setIsOpen(false)}>
+                <a href="/order#custom" onClick={() => setIsOpen(false)}>
                   <Button className="mt-4 w-full bg-red-700 font-bold">
                     Start Custom Order
                   </Button>

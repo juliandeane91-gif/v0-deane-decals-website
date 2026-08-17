@@ -1,10 +1,7 @@
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Products } from "@/components/products"
-import { Pricing } from "@/components/pricing"
-import { CustomDesign } from "@/components/custom-design"
-import { DesignAssistant } from "@/components/design-assistant"
+import { OrderSections } from "@/components/order-sections"
 
 export const metadata: Metadata = {
   title: "Shop & Order | Deane Decals",
@@ -13,14 +10,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Shop & Order | Deane Decals",
     description: "Browse the full Deane Decals catalog and build your custom order.",
-    url: "https://www.deanedecals.com/shop",
+    url: "https://www.deanedecals.com/order",
     siteName: "Deane Decals",
     locale: "en_US",
     type: "website",
   },
 }
 
-export default function ShopPage() {
+export default function OrderPage() {
   return (
     <main className="min-h-screen bg-[#05070b] text-white">
       <Header />
@@ -35,10 +32,7 @@ export default function ShopPage() {
           </p>
         </div>
       </section>
-      <Products />
-      <Pricing />
-      <CustomDesign />
-      <DesignAssistant />
+      <OrderSections />
       <Footer />
     </main>
   )

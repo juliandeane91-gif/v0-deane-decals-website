@@ -40,7 +40,7 @@ export default function CancelPage() {
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link
-            href="/shop#custom"
+            href="/order#custom"
             className="inline-block rounded-full bg-red-700 px-8 py-3 font-bold text-white hover:bg-red-600"
           >
             Back to Order Form
