@@ -77,14 +77,14 @@ export async function POST(req: Request) {
     const quantity = Math.max(1, Number(body.quantity) || 1)
     const shippingId = String(body.shipping || "pickup")
     const rush = Boolean(body.rush)
-    const clientTotal = Number(body.total)
 
     const breakdown = calculateOrderBreakdown(productId, quantity, shippingId, rush)
     if (!breakdown || breakdown.total < 50) {
       return NextResponse.json({ error: "Invalid order amount" }, { status: 400 })
     }
 
-    if (clientTotal !== breakdown.total) {
+    const clientTotal = Number(body.total)
+    if (Number.isFinite(clientTotal) && clientTotal !== breakdown.total) {
       return NextResponse.json({ error: "Order total mismatch — please refresh and try again" }, { status: 400 })
     }
 

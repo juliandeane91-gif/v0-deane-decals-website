@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 import { Footer } from "@/components/footer"
-import { OrderFormShell } from "@/components/order-form-shell"
+import { OrderFormStatic } from "@/components/order-form-static"
 
 export const metadata: Metadata = {
   title: "Custom Order | Deane Decals",
@@ -24,7 +24,7 @@ export default function CustomOrderPage() {
           </p>
         </div>
       </section>
-      <OrderFormShell />
+      <OrderFormStatic />
       <Footer />
     </main>
   )
