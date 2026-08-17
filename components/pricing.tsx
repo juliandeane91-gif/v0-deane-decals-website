@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   catalogProducts,
   formatPrice,
   formatPriceLabel,
+  getOrderLink,
   getProductsByCategory,
   PRODUCT_CATEGORIES,
   type ProductCategory,
@@ -98,7 +98,7 @@ export function Pricing() {
                     variant="link"
                     className="mt-1 h-auto p-0 font-bold text-zinc-300 hover:text-red-400"
                   >
-                    <Link href={`#custom?product=${product.id}`}>Order this</Link>
+                    <a href={getOrderLink(product.id)}>Order this</a>
                   </Button>
                 </div>
               </div>
@@ -114,10 +114,10 @@ export function Pricing() {
             </p>
           </div>
           <Button asChild className="rounded-full bg-red-700 font-bold hover:bg-red-600">
-            <Link href="#custom">
+            <a href="#custom">
               Start Custom Order
               <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+            </a>
           </Button>
         </div>
 

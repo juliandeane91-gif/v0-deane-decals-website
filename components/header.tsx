@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link"
 import { useState } from "react"
 import { Menu, ShoppingBag } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -22,41 +21,34 @@ export function Header() {
   return (
     <header className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur-md">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-        
-        {/* LOGO */}
-        <Link href="/" className="flex items-center gap-3">
+        <a href="/" className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white p-1.5 shadow-lg">
             <img src="/logo.png" alt="logo" className="h-full w-full object-contain" />
           </div>
           <span className="text-xl font-black text-white">
             Deane <span className="text-red-600">Decals</span>
           </span>
-        </Link>
+        </a>
 
-        {/* NAV */}
         <div className="hidden md:flex md:items-center md:gap-8">
           {navigation.map((item) => (
-            <Link key={item.name} href={item.href} className="text-sm text-zinc-300 hover:text-red-500">
+            <a key={item.name} href={item.href} className="text-sm text-zinc-300 hover:text-red-500">
               {item.name}
-            </Link>
+            </a>
           ))}
         </div>
 
-        {/* RIGHT SIDE */}
         <div className="flex items-center gap-3">
-          
-          {/* CHECKOUT BUTTON */}
-          <Link href="/#custom">
+          <a href="/#custom">
             <Button className="hidden rounded-full bg-red-700 px-5 font-bold text-white hover:bg-red-600 sm:flex">
               Start Custom Order
             </Button>
-          </Link>
+          </a>
 
           <Button variant="ghost" size="icon" className="relative text-white">
             <ShoppingBag className="h-5 w-5" />
           </Button>
 
-          {/* MOBILE */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="md:hidden">
               <Button variant="ghost" size="icon">
@@ -67,20 +59,19 @@ export function Header() {
             <SheetContent side="right" className="w-[300px] bg-black text-white">
               <div className="flex flex-col gap-6 pt-8">
                 {navigation.map((item) => (
-                  <Link key={item.name} href={item.href} onClick={() => setIsOpen(false)}>
+                  <a key={item.name} href={item.href} onClick={() => setIsOpen(false)}>
                     {item.name}
-                  </Link>
+                  </a>
                 ))}
 
-                <Link href="/#custom" onClick={() => setIsOpen(false)}>
+                <a href="/#custom" onClick={() => setIsOpen(false)}>
                   <Button className="mt-4 w-full bg-red-700 font-bold">
                     Start Custom Order
                   </Button>
-                </Link>
+                </a>
               </div>
             </SheetContent>
           </Sheet>
-
         </div>
       </nav>
     </header>

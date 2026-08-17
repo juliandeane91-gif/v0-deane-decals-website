@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { Facebook, Instagram, Mail, Phone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -61,14 +60,14 @@ export function Footer() {
 
         <div className="grid grid-cols-2 gap-8 py-14 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-3">
+            <a href="/" className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white p-1.5">
                 <img src="/logo.png" alt="Deane Decals logo" className="h-full w-full object-contain" />
               </div>
               <span className="text-xl font-black">
                 Deane <span className="text-red-600">Decals</span>
               </span>
-            </Link>
+            </a>
             <p className="mt-4 text-sm leading-6 text-zinc-400">
               Custom stickers and decals for teams, small businesses, and everyday use.
             </p>
@@ -99,9 +98,9 @@ export function Footer() {
             <ul className="space-y-3">
               {footerLinks.shop.map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-sm text-zinc-400 transition-colors hover:text-white">
+                  <a href={link.href} className="text-sm text-zinc-400 transition-colors hover:text-white">
                     {link.name}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -112,9 +111,9 @@ export function Footer() {
             <ul className="space-y-3">
               {footerLinks.help.map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-sm text-zinc-400 transition-colors hover:text-white">
+                  <a href={link.href} className="text-sm text-zinc-400 transition-colors hover:text-white">
                     {link.name}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>

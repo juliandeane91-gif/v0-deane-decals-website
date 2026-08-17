@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link"
 import {
   ArrowRight,
   Building2,
@@ -13,7 +12,7 @@ import {
 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { featuredProducts, formatPriceLabel } from "@/lib/products"
+import { featuredProducts, formatPriceLabel, getOrderLink } from "@/lib/products"
 
 const categories = [
   {
@@ -93,16 +92,16 @@ export function Products() {
           <h3 className="text-2xl font-black md:text-3xl">Popular order types</h3>
           <div className="flex flex-wrap gap-3">
             <Button variant="link" asChild className="h-auto p-0 font-bold text-red-500 hover:text-red-400">
-              <Link href="#pricing">
+              <a href="#pricing">
                 View full pricing
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              </a>
             </Button>
             <Button variant="link" asChild className="h-auto p-0 font-bold text-zinc-300 hover:text-red-400">
-              <Link href="#custom">
+              <a href="#custom">
                 Start a custom quote
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              </a>
             </Button>
           </div>
         </div>
@@ -136,7 +135,7 @@ export function Products() {
                   <div className="mt-5 flex items-center justify-between">
                     <p className="font-black text-white">{formatPriceLabel(product)}</p>
                     <Button size="sm" asChild className="rounded-full bg-red-700 text-white hover:bg-red-600">
-                      <Link href={`#custom?product=${product.id}`}>Order</Link>
+                      <a href={getOrderLink(product.id)}>Order</a>
                     </Button>
                   </div>
                 </CardContent>
