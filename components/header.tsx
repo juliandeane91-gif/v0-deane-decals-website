@@ -39,11 +39,9 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-3">
-          <a href="/order#custom">
-            <Button className="hidden rounded-full bg-red-700 px-5 font-bold text-white hover:bg-red-600 sm:flex">
-              Start Custom Order
-            </Button>
-          </a>
+          <Button asChild className="hidden rounded-full bg-red-700 px-5 font-bold text-white hover:bg-red-600 sm:flex">
+            <a href="/order#custom">Start Custom Order</a>
+          </Button>
 
           <Button variant="ghost" size="icon" className="relative text-white">
             <ShoppingBag className="h-5 w-5" />
@@ -64,11 +62,11 @@ export function Header() {
                   </a>
                 ))}
 
-                <a href="/order#custom" onClick={() => setIsOpen(false)}>
-                  <Button className="mt-4 w-full bg-red-700 font-bold">
+                <Button asChild className="mt-4 w-full bg-red-700 font-bold">
+                  <a href="/order#custom" onClick={() => setIsOpen(false)}>
                     Start Custom Order
-                  </Button>
-                </a>
+                  </a>
+                </Button>
               </div>
             </SheetContent>
           </Sheet>

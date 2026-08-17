@@ -24,13 +24,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308)
   }
 
-  if (pathname === "/" || pathname === "/order" || pathname === "/agents") {
-    const response = NextResponse.next()
+  const response = NextResponse.next()
+  if (!pathname.startsWith("/api/") && !pathname.startsWith("/_next/")) {
     response.headers.set("Cache-Control", "no-store, must-revalidate")
-    return response
   }
-
-  return NextResponse.next()
+  return response
 }
 
 export const config = {

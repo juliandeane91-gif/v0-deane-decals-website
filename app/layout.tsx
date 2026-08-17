@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Fredoka, Inter } from 'next/font/google'
+import { HardNavScript } from '@/components/hard-nav-script'
 import './globals.css'
 
 const fredoka = Fredoka({ 
@@ -52,6 +53,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background">
       <body className={`${inter.variable} ${fredoka.variable} font-sans antialiased`}>
+        <HardNavScript />
         {children}
       </body>
     </html>

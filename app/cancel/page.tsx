@@ -1,5 +1,3 @@
-import Link from "next/link"
-
 export default function CancelPage() {
   return (
     <main className="min-h-screen bg-[#05070b] px-6 py-24 text-white">
@@ -39,18 +37,18 @@ export default function CancelPage() {
         </div>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link
+          <a
             href="/order#custom"
             className="inline-block rounded-full bg-red-700 px-8 py-3 font-bold text-white hover:bg-red-600"
           >
             Back to Order Form
-          </Link>
-          <Link
+          </a>
+          <a
             href="/"
             className="inline-block rounded-full border border-white/20 px-8 py-3 font-bold text-white hover:bg-white/10"
           >
             Back to Home
-          </Link>
+          </a>
         </div>
       </div>
     </main>
