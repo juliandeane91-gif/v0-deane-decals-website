@@ -15,12 +15,12 @@ export const metadata: Metadata = {
   title: 'Deane Decals | Custom Stickers & Team Decals',
   description:
     'Custom stickers, team decals, helmet stickers, and business logo decals in Warner Robins, GA. Proof before print, local pickup, and shipping available.',
-  metadataBase: new URL('https://deanedecals.com'),
+  metadataBase: new URL('https://www.deanedecals.com'),
   openGraph: {
     title: 'Deane Decals | Custom Stickers & Team Decals',
     description:
       'Custom stickers, team decals, helmet stickers, and business logo decals. Proof before print, local pickup, and shipping available.',
-    url: 'https://deanedecals.com',
+    url: 'https://www.deanedecals.com',
     siteName: 'Deane Decals',
     locale: 'en_US',
     type: 'website',
