@@ -12,14 +12,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Shop & Order | Deane Decals",
     description: "Browse the full Deane Decals catalog and build your custom order.",
-    url: "https://www.deanedecals.com/order",
+    url: "https://www.deanedecals.com/buy",
     siteName: "Deane Decals",
     locale: "en_US",
     type: "website",
   },
 }
 
-export default function OrderPage() {
+export default function BuyPage() {
   return (
     <main className="min-h-screen bg-[#05070b] text-white">
       <Header />

@@ -1,0 +1,11 @@
+{
+  "product": "sticker-sheets",
+  "quantity": 1,
+  "shipping": "pickup",
+  "rush": false,
+  "total": 800,
+  "customerName": "Checkout Test",
+  "customerEmail": "hello@deanedecals.com",
+  "logoReady": "yes",
+  "notes": "Post-Stripe email switch test checkout"
+}

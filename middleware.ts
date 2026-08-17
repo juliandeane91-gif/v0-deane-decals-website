@@ -12,15 +12,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308)
   }
 
-  if (pathname === "/shop" || pathname === "/shop/") {
+  if (pathname === "/shop" || pathname === "/shop/" || pathname === "/order" || pathname === "/order/") {
     const url = request.nextUrl.clone()
-    url.pathname = "/order"
+    url.pathname = "/buy"
     return NextResponse.redirect(url, 308)
   }
 
   if (pathname === "/" && request.nextUrl.searchParams.has("product")) {
     const url = request.nextUrl.clone()
-    url.pathname = "/order"
+    url.pathname = "/buy"
     return NextResponse.redirect(url, 308)
   }
 
