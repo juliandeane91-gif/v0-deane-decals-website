@@ -1,13 +1,15 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Button } from "@/components/ui/button"
 import { Loader2, MessageCircle, Send, Sparkles, X } from "lucide-react"
+import { AGENT_DIRECTORY, type AgentId } from "@/lib/agents/types"
+import { Button } from "@/components/ui/button"
 
 type ChatMessage = {
   id: string
   role: "user" | "assistant"
-  parts: { type: "text"; text: string }[]
+  text: string
+  agent?: AgentId
 }
 
 export function DesignAssistant() {
@@ -23,16 +25,17 @@ export function DesignAssistant() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
-  async function sendMessage(message: { text: string }) {
-    if (isLoading) return
+  async function sendMessage(text: string) {
+    if (isLoading || !text.trim()) return
 
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
       role: "user",
-      parts: [{ type: "text", text: message.text }],
+      text: text.trim(),
     }
 
-    setMessages((current) => [...current, userMessage])
+    const nextMessages = [...messages, userMessage]
+    setMessages(nextMessages)
     setStatus("loading")
 
     try {
@@ -40,37 +43,31 @@ export function DesignAssistant() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [
-            ...messages.map((m) => ({
-              role: m.role,
-              content: m.parts.map((p) => p.text).join("\n"),
-            })),
-            { role: "user", content: message.text },
-          ],
+          messages: nextMessages.map((message) => ({
+            role: message.role,
+            content: message.text,
+          })),
         }),
       })
 
       const data = await res.json()
 
-      const assistantMessage: ChatMessage = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        parts: [
-          {
-            type: "text",
-            text: data.text || data.error || "Sorry, I had trouble responding.",
-          },
-        ],
-      }
-
-      setMessages((current) => [...current, assistantMessage])
+      setMessages((current) => [
+        ...current,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          text: data.text || data.error || "Sorry, I had trouble responding.",
+          agent: data.agent,
+        },
+      ])
     } catch {
       setMessages((current) => [
         ...current,
         {
           id: crypto.randomUUID(),
           role: "assistant",
-          parts: [{ type: "text", text: "Sorry, the assistant is having trouble right now." }],
+          text: "Sorry, the assistant is having trouble right now.",
         },
       ])
     } finally {
@@ -78,17 +75,17 @@ export function DesignAssistant() {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
     if (!input.trim() || isLoading) return
-    sendMessage({ text: input })
+    void sendMessage(input)
     setInput("")
   }
 
   const suggestedPrompts = [
-    "I need a decal pack for my baseball team.",
+    "I want to order Mahjong card covers.",
     "Help me size a tumbler sticker.",
-    "What information do you need for a logo sticker order?",
+    "What file do I need for my logo?",
   ]
 
   return (
@@ -98,7 +95,7 @@ export function DesignAssistant() {
         className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-red-700 px-5 py-3 text-white shadow-lg shadow-red-950/40 transition-all hover:scale-105 hover:bg-red-600 hover:shadow-xl ${isOpen ? "hidden" : ""}`}
       >
         <Sparkles className="h-5 w-5" />
-        <span className="font-semibold">Build Your Sticker</span>
+        <span className="font-semibold">Ask Deane Decals</span>
       </button>
 
       {isOpen && (
@@ -109,11 +106,14 @@ export function DesignAssistant() {
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div>
-                <h3 className="font-bold">Build Your Sticker</h3>
-                <p className="text-xs text-zinc-400">Design, order, and shipping help</p>
+                <h3 className="font-bold">Ask Deane Decals</h3>
+                <p className="text-xs text-zinc-400">Sales & design help, powered by AI</p>
               </div>
             </div>
-            <button onClick={() => setIsOpen(false)} className="rounded-full p-1 transition-colors hover:bg-white/10">
+            <button
+              onClick={() => setIsOpen(false)}
+              className="rounded-full p-1 transition-colors hover:bg-white/10"
+            >
               <X className="h-5 w-5" />
             </button>
           </div>
@@ -126,13 +126,14 @@ export function DesignAssistant() {
                 </div>
                 <h4 className="mb-2 text-lg font-black text-white">What are we making?</h4>
                 <p className="mb-4 text-sm leading-6 text-zinc-400">
-                  I can help plan a sticker order, recommend sizes, gather details, and prepare your design request.
+                  Get product recommendations, pricing help, or design guidance — routed to the right specialist automatically.
                 </p>
                 <div className="flex flex-col gap-2">
                   {suggestedPrompts.map((prompt) => (
                     <button
                       key={prompt}
-                      onClick={() => sendMessage({ text: prompt })}
+                      type="button"
+                      onClick={() => void sendMessage(prompt)}
                       className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-zinc-200 transition-all hover:border-red-700/60 hover:bg-red-700/10"
                     >
                       {prompt}
@@ -143,19 +144,21 @@ export function DesignAssistant() {
             ) : (
               <div className="space-y-4">
                 {messages.map((message) => (
-                  <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                  <div
+                    key={message.id}
+                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                  >
                     <div
                       className={`max-w-[85%] rounded-2xl px-4 py-2 ${
                         message.role === "user" ? "bg-red-700 text-white" : "bg-zinc-900 text-zinc-100"
                       }`}
                     >
-                      {message.parts.map((part, index) =>
-                        part.type === "text" ? (
-                          <p key={index} className="whitespace-pre-wrap text-sm">
-                            {part.text}
-                          </p>
-                        ) : null,
-                      )}
+                      {message.role === "assistant" && message.agent ? (
+                        <p className="mb-1 text-[10px] font-black uppercase tracking-[0.2em] text-red-400">
+                          {AGENT_DIRECTORY[message.agent]?.name ?? message.agent}
+                        </p>
+                      ) : null}
+                      <p className="whitespace-pre-wrap text-sm">{message.text}</p>
                     </div>
                   </div>
                 ))}
@@ -179,8 +182,8 @@ export function DesignAssistant() {
               <input
                 type="text"
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Describe your sticker order..."
+                onChange={(event) => setInput(event.target.value)}
+                placeholder="Ask about products, pricing, or design..."
                 className="flex-1 rounded-full border border-white/10 bg-zinc-900 px-4 py-2 text-sm text-white placeholder:text-zinc-500 focus:border-red-700 focus:outline-none focus:ring-2 focus:ring-red-700/20"
                 disabled={isLoading}
               />
