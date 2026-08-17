@@ -23,7 +23,7 @@ export function Hero() {
           <p className="mt-7 max-w-2xl text-lg leading-8 text-zinc-300 md:text-xl">Deane Decals creates clean, durable stickers for sports teams, small businesses, helmets, tumblers, laptops, cars, and custom brand packs.</p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
             <Button asChild size="lg" className="rounded-full bg-red-700 px-8 py-6 text-base font-bold text-white shadow-xl shadow-red-950/40 hover:bg-red-600">
-              <a href="/checkout">Start Custom Order<ArrowRight className="ml-2 h-5 w-5" /></a>
+              <a href="/custom-order">Start Custom Order<ArrowRight className="ml-2 h-5 w-5" /></a>
             </Button>
             <Button asChild variant="outline" size="lg" className="rounded-full border-white/20 bg-white/5 px-8 py-6 text-base font-bold text-white hover:bg-white/10 hover:text-white">
               <a href="/buy">View Products</a>

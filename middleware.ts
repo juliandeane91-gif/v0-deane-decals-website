@@ -12,6 +12,12 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308)
   }
 
+  if (pathname === "/checkout" || pathname === "/checkout/") {
+    const url = request.nextUrl.clone()
+    url.pathname = "/custom-order"
+    return NextResponse.redirect(url, 308)
+  }
+
   if (pathname === "/shop" || pathname === "/shop/" || pathname === "/order" || pathname === "/order/") {
     const url = request.nextUrl.clone()
     url.pathname = "/buy"
@@ -20,7 +26,7 @@ export function middleware(request: NextRequest) {
 
   if (pathname === "/" && request.nextUrl.searchParams.has("product")) {
     const url = request.nextUrl.clone()
-    url.pathname = "/checkout"
+    url.pathname = "/custom-order"
     return NextResponse.redirect(url, 308)
   }
 

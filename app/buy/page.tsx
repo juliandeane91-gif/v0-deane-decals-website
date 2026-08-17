@@ -43,7 +43,7 @@ export default function BuyPage() {
             Open the order form to choose your product, quantity, shipping, and checkout securely.
           </p>
           <a
-            href="/checkout"
+            href="/custom-order"
             className="mt-8 inline-flex items-center rounded-full bg-red-700 px-8 py-4 text-base font-bold text-white hover:bg-red-600"
           >
             Build Your Order

@@ -2,7 +2,7 @@ const navigation = [
   { name: "Mahjong", href: "/mahjong" },
   { name: "Shop", href: "/buy" },
   { name: "Pricing", href: "/buy#pricing" },
-  { name: "Custom Orders", href: "/checkout" },
+  { name: "Custom Orders", href: "/custom-order" },
   { name: "How It Works", href: "/#process" },
   { name: "FAQ", href: "/#faq" },
   { name: "About", href: "/#about" },
@@ -31,7 +31,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-3">
           <a
-            href="/checkout"
+            href="/custom-order"
             className="hidden rounded-full bg-red-700 px-5 py-2 text-sm font-bold text-white hover:bg-red-600 sm:inline-flex"
           >
             Start Custom Order
@@ -51,7 +51,7 @@ export function SiteHeader() {
                     {item.name}
                   </a>
                 ))}
-                <a href="/checkout" className="rounded-full bg-red-700 px-4 py-2 text-center text-sm font-bold text-white">
+                <a href="/custom-order" className="rounded-full bg-red-700 px-4 py-2 text-center text-sm font-bold text-white">
                   Start Custom Order
                 </a>
               </div>

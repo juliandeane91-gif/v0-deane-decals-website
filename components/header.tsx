@@ -9,7 +9,7 @@ const navigation = [
   { name: "Mahjong", href: "/mahjong" },
   { name: "Shop", href: "/buy" },
   { name: "Pricing", href: "/buy#pricing" },
-  { name: "Custom Orders", href: "/checkout" },
+  { name: "Custom Orders", href: "/custom-order" },
   { name: "How It Works", href: "/#process" },
   { name: "FAQ", href: "/#faq" },
   { name: "About", href: "/#about" },
@@ -40,7 +40,7 @@ export function Header() {
 
         <div className="flex items-center gap-3">
           <Button asChild className="hidden rounded-full bg-red-700 px-5 font-bold text-white hover:bg-red-600 sm:flex">
-            <a href="/checkout">Start Custom Order</a>
+            <a href="/custom-order">Start Custom Order</a>
           </Button>
 
           <Button variant="ghost" size="icon" className="relative text-white">
@@ -63,7 +63,7 @@ export function Header() {
                 ))}
 
                 <Button asChild className="mt-4 w-full bg-red-700 font-bold">
-                  <a href="/checkout" onClick={() => setIsOpen(false)}>
+                  <a href="/custom-order" onClick={() => setIsOpen(false)}>
                     Start Custom Order
                   </a>
                 </Button>

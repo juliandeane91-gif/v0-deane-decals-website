@@ -92,7 +92,7 @@ export function Products() {
               View full pricing
               <ArrowRight className="ml-2 h-4 w-4" />
             </a>
-            <a href="/checkout" className="inline-flex h-auto items-center p-0 font-bold text-zinc-300 hover:text-red-400">
+            <a href="/custom-order" className="inline-flex h-auto items-center p-0 font-bold text-zinc-300 hover:text-red-400">
               Start a custom quote
               <ArrowRight className="ml-2 h-4 w-4" />
             </a>
